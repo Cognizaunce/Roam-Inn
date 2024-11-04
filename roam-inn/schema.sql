@@ -50,6 +50,7 @@
 --     amount DECIMAL(10, 2) NOT NULL,
 --     transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 --     status ENUM('successful', 'failed') NOT NULL,
+--     payment_status ENUM('pending', 'completed', 'failed') NOT NULL,
 --     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 --     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 --     FOREIGN KEY (booking_id) REFERENCES Bookings(booking_id) ON DELETE CASCADE
