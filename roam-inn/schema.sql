@@ -67,12 +67,6 @@
 --     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 -- );
 
--- CREATE TABLE Amenities (
---     amenity_id INT PRIMARY KEY AUTO_INCREMENT,
---     hotel_id INT NOT NULL,
---     amenity_name VARCHAR(100) NOT NULL,
---     FOREIGN KEY (hotel_id) REFERENCES Hotels(hotel_id) ON DELETE CASCADE
--- );
 
 SHOW TABLES;
 
