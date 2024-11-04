@@ -1,30 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
-import './styling/App.css';
-import Sidebar from './components/testComponent.tsx'; // Adjust the path based on where Sidebar.tsx is located
+import React, { useState } from 'react';
+import { searchHotels } from './services/hotelService.ts';
 
-function App() {
-  return (
-    <div className="App">
-      <Sidebar /> {/* Sidebar Component */}
-      <div className="App-content"> {/* Adjust layout for content next to sidebar */}
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.tsx</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    </div>
-  );
-}
+const App: React.FC = () => {
+    const [city, setCity] = useState('');
+    const [hotels, setHotels] = useState<any[]>([]);
+
+    const handleSearch = async () => {
+        const result = await searchHotels(city);
+        setHotels(result.data || []); // Adjust based on API response structure
+    };
+
+    return (
+        <div>
+            <h1>Hotel Search</h1>
+            <input
+                type="text"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                placeholder="Enter city name"
+            />
+            <button onClick={handleSearch}>Search</button>
+            <div>
+                {hotels.map((hotel, index) => (
+                    <div key={index}>{hotel.name}</div>
+                ))}
+            </div>
+        </div>
+    );
+};
 
 export default App;
