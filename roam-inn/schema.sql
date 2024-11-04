@@ -74,13 +74,5 @@
 --     FOREIGN KEY (hotel_id) REFERENCES Hotels(hotel_id) ON DELETE CASCADE
 -- );
 
--- CREATE TABLE Cookies (
---     cookie_id INT PRIMARY KEY AUTO_INCREMENT,
---     user_id INT NOT NULL,
---     cookie_name VARCHAR(100) NOT NULL,
---     accepted BOOLEAN NOT NULL,
---     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
---     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
--- );
 SHOW TABLES;
 
