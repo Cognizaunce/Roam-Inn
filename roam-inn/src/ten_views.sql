@@ -1,4 +1,3 @@
-
 -- view 1
 CREATE VIEW UserBookings AS
 SELECT u.user_id, u.first_name, u.last_name, b.booking_id, r.room_type, 
@@ -25,14 +24,14 @@ JOIN Bookings b ON u.user_id = b.user_id
 WHERE CURRENT_DATE BETWEEN b.check_in_date AND b.check_out_date;
 
 -- view 4
-CREATE VIEW HotelAmenities AS
-SELECT h.hotel_id, h.name AS hotel_name, a.amenity_name
+CREATE VIEW HighRatedHotelsWithReviewCount AS
+SELECT h.hotel_id, h.name AS hotel_name, AVG(r.rating) AS average_rating, 
+       COUNT(r.review_id) AS total_reviews
 FROM Hotels h
-LEFT JOIN Amenities a ON h.hotel_id = a.hotel_id
-UNION
-SELECT h.hotel_id, h.name AS hotel_name, a.amenity_name
-FROM Hotels h
-RIGHT JOIN Amenities a ON h.hotel_id = a.hotel_id;
+JOIN Reviews r ON h.hotel_id = r.hotel_id
+GROUP BY h.hotel_id, h.name
+HAVING AVG(r.rating) >= 4
+ORDER BY average_rating DESC;
 
 -- view 5
 CREATE VIEW PopularHotels AS
@@ -51,13 +50,20 @@ FROM Hotels h
 JOIN Rooms r ON h.hotel_id = r.hotel_id
 WHERE h.rating >= 4.5 AND r.availability_status = 'booked';
 
-CREATE VIEW CommonAmenitiesByHotel AS
-SELECT h.name AS hotel_name, a.amenity_name, COUNT(a.amenity_name) AS 
-amenity_count
-FROM Hotels h
-JOIN Amenities a ON h.hotel_id = a.hotel_id
-GROUP BY h.name, a.amenity_name
-ORDER BY amenity_count DESC;
+CREATE VIEW HighDemandRooms AS
+SELECT r.room_id, r.room_type, r.price, h.name AS hotel_name,
+       COUNT(p.payment_id) AS successful_payment_count,
+       CASE 
+           WHEN COUNT(p.payment_id) > 10 THEN 'Consider Price Increase'
+           ELSE 'Stable Price'
+       END AS price_status
+FROM Rooms r
+JOIN Hotels h ON r.hotel_id = h.hotel_id
+JOIN Bookings b ON r.room_id = b.room_id
+JOIN Payments p ON b.booking_id = p.booking_id
+WHERE p.status = 'successful'
+GROUP BY r.room_id, r.room_type, r.price, h.name
+ORDER BY successful_payment_count DESC;
 
 CREATE VIEW TotalPaymentsByUser AS
 SELECT u.user_id, u.first_name, u.last_name, SUM(p.amount) AS total_spent
