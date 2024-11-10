@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { searchHotels } from './services/hotelService.ts';
+import { populateHotels, getHotels } from './services/hotelService.ts';
 
 const App: React.FC = () => {
     const [city, setCity] = useState('');
     const [hotels, setHotels] = useState<any[]>([]);
 
-    const handleSearch = async () => {
-        const result = await searchHotels(city);
-        setHotels(result.data || []); // Adjust based on API response structure
+    const handlePopulate = async () => {
+        await populateHotels(city); // First populate the database
+        const hotelsData = await getHotels(city); // Then fetch the hotels from DB
+        setHotels(hotelsData || []);
     };
 
     return (
@@ -19,7 +20,7 @@ const App: React.FC = () => {
                 onChange={(e) => setCity(e.target.value)}
                 placeholder="Enter city name"
             />
-            <button onClick={handleSearch}>Search</button>
+            <button onClick={handlePopulate}>Populate and Fetch Hotels</button>
             <div>
                 {hotels.map((hotel, index) => (
                     <div key={index}>{hotel.name}</div>
