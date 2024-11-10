@@ -46,6 +46,7 @@ async def search_hotels(city: str):
     response = requests.get(url, headers=headers)
     return response.json()
 
+#these endpoints below are not correct, must update according to amadeus docs
 @app.get("/api/populate-hotels/")
 async def populate_hotels(city: str, db: Session = Depends(get_db)):
     token = get_amadeus_token()

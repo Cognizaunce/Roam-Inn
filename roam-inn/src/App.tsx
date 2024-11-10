@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage.tsx';
 import CreateAccount from './pages/CreateAccount.tsx';
 import LoginPage from './pages/LoginPage.tsx';
-//import AdminLogin from './pages/AdminLogin';
+import AdminLogin from './pages/AdminLogin';
 
 const App: React.FC = () => {
     return (
@@ -12,7 +12,7 @@ const App: React.FC = () => {
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/create-account" element={<CreateAccount />} />
                 <Route path="/login" element={<LoginPage />} />
-                {/* <Route path="/admin-login" element={<AdminLogin />} /> */}
+                <Route path="/admin-login" element={<AdminLogin />} />
             </Routes>
         </Router>
     );
