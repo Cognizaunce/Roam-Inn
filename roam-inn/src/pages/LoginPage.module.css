@@ -1,0 +1,308 @@
+.loginContainer {
+  text-align: center;
+  margin-top: 50px;
+  width: 666px;
+  height: 450px;
+  flex-shrink: 0;
+  fill: rgba(192, 119, 127, 0.50);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25) inset;
+}
+
+.inputField {
+  margin: 10px 0;
+  display: flex;
+  width: 523.852px;
+  padding: 8px 12px;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  border: 1px solid #D5DDE5;
+  background: #FFF;
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.10) inset, 0px 2px 2px 0px rgba(255, 255, 255, 0.15);
+}
+
+.submitButton {
+  padding: 10px 20px;
+  width: 125px;
+  height: 32px;
+  flex-shrink: 0;
+  color: white; /* Ensure this contrasts with the background */
+  background: #727373;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.userLoginChild {
+  position: absolute;
+  top: 536px;
+  left: 953px;
+  width: 100px;
+  height: 100px;
+  overflow: hidden;
+}
+
+.passwordiidefaultWrapper {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 523.9px;
+  height: 44.3px;
+}
+
+.userLoginInner {
+  position: absolute;
+  top: 617.77px;
+  left: 756.34px;
+  width: 523.9px;
+  height: 44.3px;
+}
+
+.groupChild {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  border-radius: 164.94px;
+  width: 666px;
+  height: 450px;
+}
+
+.userLogin1 {
+  position: absolute;
+  height: calc(100% - 400.3px);
+  top: 30.04px;
+  left: calc(50% - 208.13px);
+  font-size: 48px;
+  color: #000;
+  text-align: center;
+  display: inline-block;
+  width: 417.1px;
+}
+
+.usernameemail {
+  position: relative;
+  line-height: 17px;
+}
+
+.innerFrame {
+  align-self: stretch;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1) inset, 0px 2px 2px rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  background-color: #fff;
+  border: 1px solid #d5dde5;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #d5dde5;
+  font-family: Nunito;
+}
+
+.usernameemailiidefault {
+  position: absolute;
+  top: 173.05px;
+  left: 78.34px;
+  width: 523.9px;
+  height: 44.3px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 4px;
+}
+
+.password {
+  position: absolute;
+  top: 242.77px;
+  left: 78.34px;
+  line-height: 17px;
+}
+
+.innerFrame1 {
+  position: absolute;
+  top: 263.77px;
+  left: 78.34px;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.1) inset, 0px 2px 2px rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  background-color: #fff;
+  border: 1px solid #d5dde5;
+  box-sizing: border-box;
+  width: 523.9px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #d5dde5;
+  font-family: Nunito;
+}
+
+.vectorParent {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 666px;
+  height: 450px;
+}
+
+.groupItem {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  border-radius: 10px;
+  background-color: #727373;
+  width: 125px;
+  height: 32px;
+}
+
+.login {
+  position: absolute;
+  top: calc(50% - 10.26px);
+  left: calc(50% - 34.5px);
+  line-height: 17px;
+  display: inline-block;
+  width: 70px;
+  height: 20.5px;
+}
+
+.rectangleParent {
+  position: absolute;
+  top: 318px;
+  left: 477px;
+  width: 125px;
+  height: 32px;
+  color: #fff;
+}
+
+.groupParent {
+  position: absolute;
+  top: 393px;
+  left: 670px;
+  width: 666px;
+  height: 450px;
+}
+
+.roamin {
+  position: absolute;
+  height: 38.97%;
+  width: 50.08%;
+  top: 0%;
+  left: 21.33%;
+  letter-spacing: 0.1em;
+  line-height: 116px;
+  font-weight: 300;
+  display: inline-block;
+  text-shadow: 0.5px 0 0 rgba(192, 119, 127, 0.5), 0 0.5px 0 rgba(192, 119, 127, 0.5), -0.5px 0 0 rgba(192, 119, 127, 0.5), 0 -0.5px 0 rgba(192, 119, 127, 0.5);
+}
+
+.roamInRest {
+  position: absolute;
+  height: 33.33%;
+  width: 78.67%;
+  top: 55.4%;
+  left: 21.33%;
+  font-size: 48px;
+  letter-spacing: 0.6em;
+  font-family: Inter;
+  display: inline-block;
+}
+
+.logoIcon {
+  position: absolute;
+  height: 100%;
+  width: 18.8%;
+  top: 0%;
+  right: 81.2%;
+  bottom: 0%;
+  left: 0%;
+  max-width: 100%;
+  overflow: hidden;
+  max-height: 100%;
+  object-fit: cover;
+}
+
+.headerComponent1 {
+  position: absolute;
+  top: 62px;
+  left: calc(50% - 593px);
+  width: 1186px;
+  height: 213px;
+  font-size: 66px;
+  color: #727373;
+  font-family: 'Averia Serif Libre';
+}
+
+.image1Icon {
+  position: absolute;
+  height: 43.24%;
+  width: 100%;
+  top: 56.76%;
+  right: 0%;
+  bottom: 0%;
+  left: 0%;
+  max-width: 100%;
+  overflow: hidden;
+  max-height: 100%;
+  object-fit: cover;
+}
+
+.welcome {
+  position: absolute;
+  height: 25.11%;
+  width: 99.92%;
+  top: 39.18%;
+  left: 0%;
+  letter-spacing: 0.25em;
+  display: inline-block;
+}
+
+.image2Icon {
+  position: absolute;
+  height: 37.85%;
+  width: 100%;
+  top: 0%;
+  right: 0%;
+  bottom: 62.15%;
+  left: 0%;
+  max-width: 100%;
+  overflow: hidden;
+  max-height: 100%;
+  object-fit: cover;
+}
+
+.hi {
+  position: absolute;
+  height: 100%;
+  width: 84.49%;
+  top: 0%;
+  right: 15.51%;
+  bottom: 0%;
+  left: 0%;
+}
+
+.welcomeDiv2 {
+  position: absolute;
+  top: 369px;
+  left: 94px;
+  width: 584px;
+  height: 561.5px;
+  font-size: 80px;
+  color: #000;
+}
+
+.userLogin {
+  width: 100%;
+  position: relative;
+  background-color: #fff;
+  height: 1024px;
+  overflow: hidden;
+  text-align: left;
+  font-size: 24px;
+  color: #212934;
+  font-family: Lustria;
+}
