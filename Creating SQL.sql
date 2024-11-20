@@ -1,0 +1,78 @@
+use roaminn;
+-- 1. Create the Users Data Table
+CREATE TABLE Users (
+    user_id INT PRIMARY KEY AUTO_INCREMENT,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    phone_number VARCHAR(15),
+    account_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    account_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
+);
+
+-- 2. Create The Hotels Data table
+CREATE TABLE Hotels (
+    hotel_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    office_phone_number VARCHAR(15),
+    address VARCHAR (255) NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    state VARCHAR(100) NOT NULL,
+    country VARCHAR(100) NOT NULL,
+    postal_code VARCHAR(10),
+    rating DECIMAL(2, 1), -- allows rating from 0.0 to 5.0
+    amenities TEXT
+);
+
+-- 3. Create the Bookings table
+CREATE TABLE Bookings (
+    booking_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    room_id INT NOT NULL,
+    check_in_date DATE NOT NULL,
+    check_out_date DATE NOT NULL,
+    total_price DECIMAL(10, 2) NOT NULL,
+    payment_status ENUM('pending', 'completed', 'failed') NOT NULL,
+    created_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (room_id) REFERENCES Rooms (room_id) ON DELETE CASCADE
+);
+
+-- 4 Create the Rooms Table
+CREATE TABLE Rooms (
+    room_id INT PRIMARY KEY AUTO_INCREMENT,
+    hotel_id INT NOT NULL,
+    room_type VARCHAR(50) NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    availability_status ENUM('available', 'booked') NOT NULL,
+    FOREIGN KEY (hotel_id) REFERENCES Hotels(hotel_id) ON DELETE CASCADE
+);
+
+-- 5. Create the Payments Table
+CREATE TABLE Payments (
+    payment_id INT PRIMARY KEY AUTO_INCREMENT,
+    booking_id INT NOT NULL,
+    payment_method ENUM('credit_card', 'PayPal', 'bank_transfer') NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('successful', 'failed') NOT NULL,
+    payment_status ENUM('pending', 'completed', 'failed') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (booking_id) REFERENCES Bookings(booking_id) ON DELETE CASCADE
+);
+
+-- 6. Create the Reviews Table
+CREATE TABLE Reviews(
+    review_id INT PRIMARY KEY AUTO_INCREMENT,
+    hotel_id INT NOT NULL,
+    user_id INT NOT NULL,
+    rating INT CHECK (rating BETWEEN 1 AND 5),
+    user_comment TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (hotel_id) REFERENCES Hotels(hotel_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+);

@@ -4,3 +4,6 @@ requests
 python-dotenv
 sqlalchemy
 mysql-connector-python
+libpass # encryption library
+email-validator # needs to be installed for emails to be validated automagically
+bcrypt # backend for encryption
