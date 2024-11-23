@@ -6,6 +6,7 @@ CREATE TABLE Users (
     last_name VARCHAR(50) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
+    user_type ENUM('user', 'admin', 'guest') NOT NULL,
     phone_number VARCHAR(15),
     account_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     account_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP 
