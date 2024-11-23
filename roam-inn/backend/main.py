@@ -12,6 +12,10 @@ from models import User, Hotel
 from passlib.context import CryptContext
 from pydantic import BaseModel, Field, EmailStr
 from fastapi.exceptions import HTTPException
+
+#for hotel address
+from utils import reverse_geocode
+
 # Load environment variables
 load_dotenv()
 
@@ -112,26 +116,54 @@ async def search_hotels(city: str):
     response = requests.get(url, headers=headers)
     return response.json()
 
-#these endpoints below are not correct, must update according to amadeus docs
-@app.get("/api/populate-hotels/")
-async def populate_hotels(city: str, db: Session = Depends(get_db)):
-    token = get_amadeus_token()
-    url = f"https://test.api.amadeus.com/v1/reference-data/locations/hotels/by-city?cityCode={city}&radius=15&radiusUnit=KM&hotelSource=ALL"
-    headers = {"Authorization": f"Bearer {token}"}
-    response = requests.get(url, headers=headers)
-    hotels_data = response.json().get("data", [])
+#endpoint to convert hotel coordinates to address
+@app.post("/process-hotels/")
+async def process_hotels(hotels: list[dict], db: Session = Depends(get_db)):
+    """
+    Processes a list of hotels, calls the reverse geocoding API, and prepares data for insertion.
+    """
+    processed_hotels = []
 
-    # Insert each hotel into the database
-    for hotel in hotels_data:
-        create_hotel(
-            db=db,
-            name=hotel.get("name"),
-            city=city,
-            rating=hotel.get("rating", 0),  # Adjust based on the actual structure
-            address=hotel.get("address", {}).get("lines", [""])[0]
-        )
+    for hotel in hotels:
+        hotel_id = hotel["hotelId"]
+        latitude = hotel["geoCode"]["latitude"]
+        longitude = hotel["geoCode"]["longitude"]
+
+        address_details = reverse_geocode(latitude, longitude)
+        if not address_details:
+            continue  # Skip if reverse geocoding fails
+
+        processed_hotels.append({
+            "hotel_id": hotel_id,
+            "name": address_details["name"],
+            "address": address_details["address"],
+            "city": address_details["city"],
+            "state": address_details["state"],
+            "country": address_details["country"],
+            "postal_code": address_details["postal_code"],
+        })
+
+    return {"processed_hotels": processed_hotels}
+#these endpoints below are not correct, must update according to amadeus docs
+# @app.get("/api/populate-hotels/")
+# async def populate_hotels(city: str, db: Session = Depends(get_db)):
+#     token = get_amadeus_token()
+#     url = f"https://test.api.amadeus.com/v1/reference-data/locations/hotels/by-city?cityCode={city}&radius=15&radiusUnit=KM&hotelSource=ALL"
+#     headers = {"Authorization": f"Bearer {token}"}
+#     response = requests.get(url, headers=headers)
+#     hotels_data = response.json().get("data", [])
+
+#     # Insert each hotel into the database
+#     for hotel in hotels_data:
+#         create_hotel(
+#             db=db,
+#             name=hotel.get("name"),
+#             city=city,
+#             rating=hotel.get("rating", 0),  # Adjust based on the actual structure
+#             address=hotel.get("address", {}).get("lines", [""])[0]
+#         )
     
-    return {"message": "Hotels data populated in database"}
+#     return {"message": "Hotels data populated in database"}
 
 @app.get("/api/hotels/")
 async def get_hotels(city: str, db: Session = Depends(get_db)):

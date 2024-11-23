@@ -15,14 +15,11 @@ CREATE TABLE Users (
 CREATE TABLE Hotels (
     hotel_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
-    office_phone_number VARCHAR(15),
     address VARCHAR (255) NOT NULL,
     city VARCHAR(100) NOT NULL,
     state VARCHAR(100) NOT NULL,
     country VARCHAR(100) NOT NULL,
-    postal_code VARCHAR(10),
-    rating DECIMAL(2, 1), -- allows rating from 0.0 to 5.0
-    amenities TEXT
+    postal_code VARCHAR(10)
 );
 
 -- 3. Create the Bookings table
