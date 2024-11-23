@@ -40,17 +40,13 @@ class Hotel(Base):
 
     hotel_id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(100), nullable=False)
-    office_phone_number = Column(String(15))
     address = Column(String(255), nullable=False)
     city = Column(String(100), nullable=False)
     state = Column(String(100), nullable=False)
     country = Column(String(100), nullable=False)
     postal_code = Column(String(10))
-    rating = Column(DECIMAL(2, 1))
-    amenities = Column(Text)
-
-    rooms = relationship("Room", back_populates="hotel")
-    reviews = relationship("Review", back_populates="hotel")
+    # rooms = relationship("Room", back_populates="hotel")
+    # reviews = relationship("Review", back_populates="hotel")
 
 
 class Room(Base):
