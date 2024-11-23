@@ -3,11 +3,11 @@ import React, { useState } from 'react';
 
 const CreateAccount: React.FC = () => {
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
+        first_name: '',
+        last_name: '',
         email: '',
         password: '',
-        phoneNumber: '',
+        phone_number: '',
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
