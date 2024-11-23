@@ -4,6 +4,7 @@ import requests
 import os
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 from database import get_db
 from crud import create_hotel, get_hotels_by_city
 from models import User, Hotel
@@ -120,7 +121,8 @@ async def search_hotels(city: str):
 @app.post("/process-hotels/")
 async def process_hotels(hotels: list[dict], db: Session = Depends(get_db)):
     """
-    Processes a list of hotels, calls the reverse geocoding API, and prepares data for insertion.
+    Processes a list of hotels, calls the reverse geocoding API, 
+    and inserts new hotels into the database if they don't already exist.
     """
     processed_hotels = []
 
@@ -129,21 +131,47 @@ async def process_hotels(hotels: list[dict], db: Session = Depends(get_db)):
         latitude = hotel["geoCode"]["latitude"]
         longitude = hotel["geoCode"]["longitude"]
 
+        # Call reverse geocoding API to get the address
         address_details = reverse_geocode(latitude, longitude)
         if not address_details:
             continue  # Skip if reverse geocoding fails
 
-        processed_hotels.append({
+        # Prepare hotel data
+        hotel_data = {
             "hotel_id": hotel_id,
-            "name": address_details["name"],
-            "address": address_details["address"],
-            "city": address_details["city"],
-            "state": address_details["state"],
-            "country": address_details["country"],
-            "postal_code": address_details["postal_code"],
-        })
+            "name": address_details["name"] or "Unknown Hotel",
+            "address": address_details["address"] or "Unknown Address",
+            "city": address_details["city"] or "Unknown City",
+            "state": address_details["state"] or "Unknown State",
+            "country": address_details["country"] or "Unknown Country",
+            "postal_code": address_details["postal_code"] or "00000",
+        }
 
-    return {"processed_hotels": processed_hotels}
+        # Insert into database if it doesn't already exist
+        try:
+            new_hotel = Hotel(
+                hotel_id=hotel_data["hotel_id"],
+                name=hotel_data["name"],
+                address=hotel_data["address"],
+                city=hotel_data["city"],
+                state=hotel_data["state"],
+                country=hotel_data["country"],
+                postal_code=hotel_data["postal_code"],
+            )
+            db.add(new_hotel)
+            db.commit()
+            db.refresh(new_hotel)
+            processed_hotels.append(hotel_data)  # Append only if successfully added
+
+        except IntegrityError:
+            db.rollback()  # Avoid breaking the loop if duplicate entry or other DB issue
+            continue
+
+    return {
+        "status": "success",
+        "processed_hotels": processed_hotels,
+        "message": f"{len(processed_hotels)} hotels processed and inserted into the database.",
+    }
 #these endpoints below are not correct, must update according to amadeus docs
 # @app.get("/api/populate-hotels/")
 # async def populate_hotels(city: str, db: Session = Depends(get_db)):
