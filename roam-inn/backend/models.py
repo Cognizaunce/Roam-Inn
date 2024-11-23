@@ -18,6 +18,11 @@ class PaymentMethod(enum.Enum):
     PayPal = "PayPal"
     bank_transfer = "bank_transfer"
 
+class UserType(enum.Enum):
+    user = "user"
+    admin = "admin"
+    guest = "guest"
+
 
 class User(Base):
     __tablename__ = "Users"
@@ -27,6 +32,7 @@ class User(Base):
     last_name = Column(String(50), nullable=False)
     email = Column(String(100), unique=True, nullable=False)
     password_hash = Column(String(255), nullable=False)
+    user_type = Column(Enum(UserType), nullable=False)
     phone_number = Column(String(15))
     account_created = Column(TIMESTAMP, default="CURRENT_TIMESTAMP")
     account_updated = Column(TIMESTAMP, default="CURRENT_TIMESTAMP", onupdate="CURRENT_TIMESTAMP")
