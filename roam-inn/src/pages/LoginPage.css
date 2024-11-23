@@ -1,0 +1,61 @@
+/* Center the login page */
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f8f8f8;
+    font-family: Arial, sans-serif;
+}
+
+/* Style the login box */
+.login-box {
+    background-color: #d9b3b3;
+    border-radius: 20px;
+    padding: 30px;
+    width: 300px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Header styles */
+.login-box h2 {
+    font-family: "Georgia", serif;
+    color: #3e3e3e;
+    margin-bottom: 20px;
+}
+
+/* Label styles */
+.login-box label {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    color: #3e3e3e;
+}
+
+/* Input field styles */
+.login-box input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+/* Button styles */
+.login-box button {
+    background-color: #5d4237;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 100%;
+}
+
+.login-box button:hover {
+    background-color: #3e2b25;
+}
