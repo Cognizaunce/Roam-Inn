@@ -7,6 +7,7 @@ const CreateAccount: React.FC = () => {
         last_name: '',
         email: '',
         password: '',
+        user_type: 'user',
         phone_number: '',
     });
 
