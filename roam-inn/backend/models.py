@@ -44,7 +44,7 @@ class User(Base):
 class Hotel(Base):
     __tablename__ = "Hotels"
 
-    hotel_id = Column(String(50), nullable=False)
+    hotel_id = Column(String(50), primary_key=True, nullable=False)
     name = Column(String(100), nullable=False)
     address = Column(String(255), nullable=False)
     city = Column(String(100), nullable=False)
