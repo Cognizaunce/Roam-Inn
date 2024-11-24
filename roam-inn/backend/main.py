@@ -139,6 +139,7 @@ async def process_hotels(hotels: list[dict], db: Session = Depends(get_db)):
 
     for hotel in hotels:
         hotel_id = hotel["hotelID"]
+        hotel_name = hotel["hotelName"]
         latitude = hotel["geoCode"]["latitude"]
         longitude = hotel["geoCode"]["longitude"]
 
@@ -150,7 +151,7 @@ async def process_hotels(hotels: list[dict], db: Session = Depends(get_db)):
         # Prepare hotel data
         hotel_data = {
             "hotel_id": hotel_id,
-            "name": address_details["name"] or "Unknown Hotel",
+            "name": hotel_name,
             "address": address_details["address"] or "Unknown Address",
             "city": address_details["city"] or "Unknown City",
             "state": address_details["state"] or "Unknown State",

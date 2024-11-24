@@ -38,12 +38,15 @@ const DashboardPage: React.FC = () => {
 
             // Parse the hotels data to extract hotelId and geoCode
             const hotels = data?.data?.map((hotel: any) => ({
-                hotelID: hotel.hotelId, // Using 'hotelId' as per your response structure
+                hotelID: hotel.hotelId,
+                hotelName: hotel.name,
                 geoCode: {
                     latitude: hotel.geoCode.latitude,
                     longitude: hotel.geoCode.longitude,
                 },
             }));
+
+            console.log(hotels)
 
             if (!hotels || hotels.length === 0) {
                 throw new Error('No valid hotels data found.');
@@ -76,7 +79,8 @@ const DashboardPage: React.FC = () => {
                             onChange={(e) => setSelectedCity(e.target.value)}
                             style={{ margin: '10px', padding: '5px' }}
                         >
-                            <option value="LAX">LAX</option>
+                            <option value="LAX">Los Angeles</option>
+                            <option value="YYZ">Toronto</option>
                         </select>
                     </label>
                 </div>
