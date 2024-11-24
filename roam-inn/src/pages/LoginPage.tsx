@@ -1,17 +1,45 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styles from './LoginPage.module.css';
 
 const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const location = useLocation();
-  const isAdminLogin = location.pathname === '/admin-login';
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const [statusMessage, setStatusMessage] = useState('');
+    const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Logging in with:', { email, password, isAdminLogin });
-  };
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setErrorMessage('');
+        setStatusMessage('');
+
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email,
+                    password,
+                }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setStatusMessage(data.message || 'Login successful!');
+                // Navigate to the dashboard after successful login
+                navigate('/dashboard');
+            } else {
+                const errorData = await response.json();
+                setErrorMessage(errorData.detail || 'Login failed. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error during login:', error);
+            setErrorMessage('An unexpected error occurred. Please try again.');
+        }
+    };
 
   return (
     <div className={styles.userLogin}>
@@ -33,7 +61,9 @@ const LoginPage: React.FC = () => {
 
         {/* Right Content: User Login Form */}
         <div className={styles.groupParent}>
-          <h2 className={styles.userLogin1}>{isAdminLogin ? 'Admin Login' : 'User Login'}</h2>
+          <h2 className={styles.userLogin1}>{'User Login'}</h2>
+            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+            {statusMessage && <p style={{ color: 'green' }}>{statusMessage}</p>}
           <form onSubmit={handleSubmit}>
             <input
               id="email"

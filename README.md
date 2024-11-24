@@ -72,3 +72,10 @@
 
 - Ensure that your code is properly tested before merging to the `dev` branch.
 - Only authorized users may push to prod
+
+
+## To Run
+
+in backend, uvicorn main:app --reload
+
+in roaminn. npm start

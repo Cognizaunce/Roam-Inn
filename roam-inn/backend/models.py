@@ -18,6 +18,11 @@ class PaymentMethod(enum.Enum):
     PayPal = "PayPal"
     bank_transfer = "bank_transfer"
 
+class UserType(enum.Enum):
+    user = "user"
+    admin = "admin"
+    guest = "guest"
+
 
 class User(Base):
     __tablename__ = "Users"
@@ -27,6 +32,7 @@ class User(Base):
     last_name = Column(String(50), nullable=False)
     email = Column(String(100), unique=True, nullable=False)
     password_hash = Column(String(255), nullable=False)
+    user_type = Column(Enum(UserType), nullable=False)
     phone_number = Column(String(15))
     account_created = Column(TIMESTAMP, default="CURRENT_TIMESTAMP")
     account_updated = Column(TIMESTAMP, default="CURRENT_TIMESTAMP", onupdate="CURRENT_TIMESTAMP")
@@ -38,17 +44,13 @@ class User(Base):
 class Hotel(Base):
     __tablename__ = "Hotels"
 
-    hotel_id = Column(Integer, primary_key=True, autoincrement=True)
+    hotel_id = Column(String(50), primary_key=True, nullable=False)
     name = Column(String(100), nullable=False)
-    office_phone_number = Column(String(15))
     address = Column(String(255), nullable=False)
     city = Column(String(100), nullable=False)
     state = Column(String(100), nullable=False)
     country = Column(String(100), nullable=False)
     postal_code = Column(String(10))
-    rating = Column(DECIMAL(2, 1))
-    amenities = Column(Text)
-
     rooms = relationship("Room", back_populates="hotel")
     reviews = relationship("Review", back_populates="hotel")
 
@@ -57,7 +59,7 @@ class Room(Base):
     __tablename__ = "Rooms"
 
     room_id = Column(Integer, primary_key=True, autoincrement=True)
-    hotel_id = Column(Integer, ForeignKey("Hotels.hotel_id"), nullable=False)
+    hotel_id = Column(String(50), ForeignKey("Hotels.hotel_id"), nullable=False)
     room_type = Column(String(50), nullable=False)
     price = Column(DECIMAL(10, 2), nullable=False)
     availability_status = Column(Enum(AvailabilityStatus), nullable=False)
@@ -103,7 +105,7 @@ class Review(Base):
     __tablename__ = "Reviews"
 
     review_id = Column(Integer, primary_key=True, autoincrement=True)
-    hotel_id = Column(Integer, ForeignKey("Hotels.hotel_id"), nullable=False)
+    hotel_id = Column(String(50), ForeignKey("Hotels.hotel_id"), nullable=False)
     user_id = Column(Integer, ForeignKey("Users.user_id"), nullable=False)
     rating = Column(Integer, nullable=False)
     user_comment = Column(Text)
