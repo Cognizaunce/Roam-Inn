@@ -1,6 +1,8 @@
 // src/pages/LandingPage.tsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../styling/tailwind.css';
+
 
 const LandingPage: React.FC = () => {
     const navigate = useNavigate();

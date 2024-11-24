@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import '../styling/tailwind.css';
+
 
 const CreateAccount: React.FC = () => {
     const [formData, setFormData] = useState({

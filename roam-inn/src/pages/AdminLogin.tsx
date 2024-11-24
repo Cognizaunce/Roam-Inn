@@ -1,6 +1,7 @@
 // src/pages/LoginPage.tsx
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import '../styling/tailwind.css';
 
 const LoginPage: React.FC = () => {
     const [email, setEmail] = useState('');

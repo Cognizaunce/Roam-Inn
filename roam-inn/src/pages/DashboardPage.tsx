@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import '../styling/tailwind.css';
 import { searchHotels, processHotels } from '../services/hotelService.ts'; // Import both service functions
 
 const DashboardPage: React.FC = () => {
