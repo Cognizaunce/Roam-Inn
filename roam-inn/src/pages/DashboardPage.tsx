@@ -66,7 +66,7 @@ const DashboardPage: React.FC = () => {
     };
 
     return (
-        <div style={{ textAlign: 'center', marginTop: '20px' }}>
+        <div className="text-center mt-5">
             <h1>Roam Inn</h1>
 
             {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
