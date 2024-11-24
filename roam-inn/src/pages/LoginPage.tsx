@@ -16,26 +16,26 @@ const LoginPage: React.FC = () => {
         setError(''); // Clear any previous error message
         console.log('Logging in with:', { email, password, isAdminLogin });
 
-        // try {
-        //     const response = await fetch('/login', { // Replace '/login' with your API endpoint
-        //         method: 'POST',
-        //         headers: { 'Content-Type': 'application/json' },
-        //         body: JSON.stringify({ email, password }),
-        //     });
+        try {
+            const response = await fetch('/login', { // Replace '/login' with your API endpoint
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
 
-        //     const result = await response.json();
+            const result = await response.json();
 
-        //     if (response.ok && result.message === 'success') {
-        //         // Navigate to the dashboard if login is successful
-        //         navigate('/dashboard');
-        //     } else {
-        //         // Display error message from backend
-        //         setError(result.message || 'Login failed. Please try again.');
-        //     }
-        // } catch (err) {
-        //     setError('An error occurred. Please try again later.');
-        //     console.error('Error during login:', err);
-        // }
+            if (response.ok && result.message === 'success') {
+                // Navigate to the dashboard if login is successful
+                navigate('/dashboard');
+            } else {
+                // Display error message from backend
+                setError(result.message || 'Login failed. Please try again.');
+            }
+        } catch (err) {
+            setError('An error occurred. Please try again later.');
+            console.error('Error during login:', err);
+        }
 
         navigate('/dashboard');
     };
