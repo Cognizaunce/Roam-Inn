@@ -1,6 +1,6 @@
-export const searchHotels = async (city: string) => {
+export const searchHotels = async (city: string, radius: number) => {
     try {
-        const response = await fetch(`/api/search-hotels?city=${city}`);
+        const response = await fetch(`/api/search-hotels?city=${city}&radius=${radius}`);
         if (!response.ok) {
             throw new Error("Failed to fetch hotels");
         }

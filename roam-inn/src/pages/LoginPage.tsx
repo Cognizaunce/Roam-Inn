@@ -1,48 +1,50 @@
-// src/pages/LoginPage.tsx
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 const LoginPage: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const location = useLocation();
-    const isAdminLogin = location.pathname === '/admin-login';
-    const [error, setError] = useState<string>(''); // Explicit type annotation
+    const [errorMessage, setErrorMessage] = useState('');
+    const [statusMessage, setStatusMessage] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError(''); // Clear any previous error message
-        console.log('Logging in with:', { email, password, isAdminLogin });
+        setErrorMessage('');
+        setStatusMessage('');
 
-        // try {
-        //     const response = await fetch('/login', { // Replace '/login' with your API endpoint
-        //         method: 'POST',
-        //         headers: { 'Content-Type': 'application/json' },
-        //         body: JSON.stringify({ email, password }),
-        //     });
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email,
+                    password,
+                }),
+            });
 
-        //     const result = await response.json();
-
-        //     if (response.ok && result.message === 'success') {
-        //         // Navigate to the dashboard if login is successful
-        //         navigate('/dashboard');
-        //     } else {
-        //         // Display error message from backend
-        //         setError(result.message || 'Login failed. Please try again.');
-        //     }
-        // } catch (err) {
-        //     setError('An error occurred. Please try again later.');
-        //     console.error('Error during login:', err);
-        // }
-
-        navigate('/dashboard');
+            if (response.ok) {
+                const data = await response.json();
+                setStatusMessage(data.message || 'Login successful!');
+                // Navigate to the dashboard after successful login
+                navigate('/dashboard');
+            } else {
+                const errorData = await response.json();
+                setErrorMessage(errorData.detail || 'Login failed. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error during login:', error);
+            setErrorMessage('An unexpected error occurred. Please try again.');
+        }
     };
 
     return (
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
-            <h2>{isAdminLogin ? 'Admin Login' : 'User Login'}</h2>
+            <h2>{'User Login'}</h2>
+            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+            {statusMessage && <p style={{ color: 'green' }}>{statusMessage}</p>}
             <form onSubmit={handleSubmit}>
                 <input
                     type="email"

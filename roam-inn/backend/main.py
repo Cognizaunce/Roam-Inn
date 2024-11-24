@@ -62,6 +62,10 @@ class LoginRequest(BaseModel):
     email: str
     password: str
 
+class hotelSearchRequest(BaseModel):
+    city: str
+    radius: int
+
 # Endpoint: Create a new user account
 @app.post("/create-account")
 def create_account(request: CreateAccountRequest, db: Session = Depends(get_db)):
@@ -117,9 +121,9 @@ def login(request: LoginRequest, db: Session = Depends(get_db)):
 
 # Endpoint to search for hotels
 @app.get("/api/search-hotels")
-async def search_hotels(city: str):
+async def search_hotels(city: str, radius: int, db: Session = Depends(get_db)):
     token = get_amadeus_token()
-    url = f"https://test.api.amadeus.com/v1/reference-data/locations/hotels/by-city?cityCode={city}&radius=15&radiusUnit=KM&hotelSource=ALL"
+    url = f"https://test.api.amadeus.com/v1/reference-data/locations/hotels/by-city?cityCode={city}&radius={radius}&radiusUnit=KM&hotelSource=ALL"
     headers = {"Authorization": f"Bearer {token}"}
     response = requests.get(url, headers=headers)
     return response.json()
