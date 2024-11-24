@@ -66,6 +66,64 @@ class hotelSearchRequest(BaseModel):
     city: str
     radius: int
 
+# Pydantic model for updating a user
+class UpdateUserRequest(BaseModel):
+    first_name: str = None
+    last_name: str = None
+    email: EmailStr = None
+    phone_number: str = None
+    user_type: str = None  # To promote to 'admin' or change user type
+
+# Endpoint: Get all users
+@app.get("/api/users")
+def get_all_users(db: Session = Depends(get_db)):
+    users = db.query(User).all()  # Query all users in the database
+    return users
+
+# Endpoint: Update user information
+@app.patch("/api/users/{user_id}")
+def update_user(user_id: int, request: UpdateUserRequest, db: Session = Depends(get_db)):
+    #get timestamp
+    current_time = datetime.utcnow()
+
+    # Fetch the user by user_id
+    user = db.query(User).filter(User.user_id == user_id).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Update fields based on the request
+    if request.first_name:
+        user.first_name = request.first_name
+    if request.last_name:
+        user.last_name = request.last_name
+    if request.email:
+        user.email = request.email
+    if request.phone_number:
+        user.phone_number = request.phone_number
+    if request.user_type:
+        user.user_type = request.user_type
+    user.account_updated = current_time
+
+    db.commit()
+    db.refresh(user)
+
+    return {"status": "success", "message": "User information updated successfully", "user": user}
+
+# Endpoint: Delete a user
+@app.delete("/api/users/{user_id}")
+def delete_user(user_id: int, db: Session = Depends(get_db)):
+    # Fetch the user by user_id
+    user = db.query(User).filter(User.user_id == user_id).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    db.delete(user)  # Delete the user
+    db.commit()
+
+    return {"status": "success", "message": "User deleted successfully"}
+
 # Endpoint: Create a new user account
 @app.post("/create-account")
 def create_account(request: CreateAccountRequest, db: Session = Depends(get_db)):
