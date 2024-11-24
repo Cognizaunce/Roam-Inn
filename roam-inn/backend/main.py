@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 import requests
 import os
+from datetime import datetime
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
@@ -72,6 +73,9 @@ def create_account(request: CreateAccountRequest, db: Session = Depends(get_db))
     # Hash the password
     hashed_password = pwd_context.hash(request.password)
 
+    # Current timestamp
+    current_time = datetime.utcnow()
+
     # Create new user
     new_user = User(
         first_name=request.first_name,
@@ -79,6 +83,9 @@ def create_account(request: CreateAccountRequest, db: Session = Depends(get_db))
         email=request.email,
         password_hash=hashed_password,
         phone_number=request.phone_number,
+        user_type="user",
+        account_created=current_time,
+        account_updated=current_time
     )
     db.add(new_user)
     db.commit()

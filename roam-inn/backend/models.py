@@ -51,8 +51,8 @@ class Hotel(Base):
     state = Column(String(100), nullable=False)
     country = Column(String(100), nullable=False)
     postal_code = Column(String(10))
-    # rooms = relationship("Room", back_populates="hotel")
-    # reviews = relationship("Review", back_populates="hotel")
+    rooms = relationship("Room", back_populates="hotel")
+    reviews = relationship("Review", back_populates="hotel")
 
 
 class Room(Base):
