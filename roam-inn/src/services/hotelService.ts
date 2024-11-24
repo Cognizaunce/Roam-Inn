@@ -10,22 +10,28 @@ export const searchHotels = async (city: string, radius: number) => {
     }
 };
 
-export const processHotels = async (hotels: any[]): Promise<any[]> => {
-    const response = await fetch(`api/process-hotels/`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(hotels),
-    });
+export const processHotels = async (hotels: any[]) => {
+    try {
+        // Make a POST request to process-hotels endpoint
+        const response = await fetch(`/process-hotels/`, {
+            method: 'POST',  // Change to POST method
+            headers: {
+                'Content-Type': 'application/json',  // Set content type to JSON
+            },
+            body: JSON.stringify(hotels),  // Send the hotels array in the request body
+        });
 
-    if (!response.ok) {
-        throw new Error("Failed to process hotels");
+        if (!response.ok) {
+            throw new Error("Failed to process hotels");
+        }
+        
+        const data = await response.json();
+        return data.processed_hotels;  // Return processed hotel data
+    } catch (error) {
+        console.error("Error processing hotels:", error);
     }
-
-    const data = await response.json();
-    return data.processed_hotels;
 };
+
 
 // export const populateHotels = async (city: string) => {
 //     try {

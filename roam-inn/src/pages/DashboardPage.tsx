@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { searchHotels } from '../services/hotelService.ts'; // Import your service function
+import { searchHotels, processHotels } from '../services/hotelService.ts'; // Import both service functions
 
 const DashboardPage: React.FC = () => {
-    const [selectedCity, setSelectedCity] = useState('YYZ'); // Pre-select 'YYZ'
-    const [distance, setDistance] = useState<number>(1); // Default distance set to 1
+    const [selectedCity, setSelectedCity] = useState('LAX'); // Pre-select 'LAX'
+    const [distance, setDistance] = useState<number>(2); // Default distance set to 2 km
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [hotelData, setHotelData] = useState<any>(null);
@@ -29,19 +29,33 @@ const DashboardPage: React.FC = () => {
 
         setLoading(true);
         try {
-            // Use the searchHotels service function
+            // Fetch hotels data from the first API
             const data = await searchHotels(selectedCity, distance);
 
             if (!data) {
                 throw new Error('No hotels found or failed to fetch hotels.');
             }
 
-            console.log('Search results:', data);  // Log the response data for now
-            setHotelData(data);
+            // Parse the hotels data to extract hotelId and geoCode
+            const hotels = data?.data?.map((hotel: any) => ({
+                hotelID: hotel.hotelId, // Using 'hotelId' as per your response structure
+                geoCode: {
+                    latitude: hotel.geoCode.latitude,
+                    longitude: hotel.geoCode.longitude,
+                },
+            }));
+
+            if (!hotels || hotels.length === 0) {
+                throw new Error('No valid hotels data found.');
+            }
+
+            // Use the processHotels function to process the extracted data
+            const processedHotels = await processHotels(hotels);
+            setHotelData(processedHotels); // Set the processed hotel data
             setErrorMessage('');
         } catch (error: any) {
             console.error('Error submitting data:', error);
-            setErrorMessage('Unable to fetch hotels. Please try again later.');
+            setErrorMessage('Unable to fetch or process hotels. Please try again later.');
         } finally {
             setLoading(false);
         }
@@ -62,7 +76,7 @@ const DashboardPage: React.FC = () => {
                             onChange={(e) => setSelectedCity(e.target.value)}
                             style={{ margin: '10px', padding: '5px' }}
                         >
-                            <option value="YYZ">YYZ</option>
+                            <option value="LAX">LAX</option>
                         </select>
                     </label>
                 </div>
@@ -86,13 +100,15 @@ const DashboardPage: React.FC = () => {
                 </button>
             </form>
 
-            {/* Render hotel data */}
+            {/* Render processed hotel data */}
             {hotelData && (
                 <div style={{ marginTop: '20px' }}>
-                    <h3>Hotels:</h3>
+                    <h3>Processed Hotels:</h3>
                     <ul>
-                        {hotelData?.data?.map((hotel: any, index: number) => (
-                            <li key={index}>{hotel.name}</li>
+                        {hotelData?.processed_hotels?.map((hotel: any, index: number) => (
+                            <li key={index}>
+                                {hotel.name} - {hotel.city}, {hotel.country}
+                            </li>
                         ))}
                     </ul>
                 </div>

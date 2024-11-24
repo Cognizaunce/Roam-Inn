@@ -44,7 +44,7 @@ class User(Base):
 class Hotel(Base):
     __tablename__ = "Hotels"
 
-    hotel_id = Column(Integer, primary_key=True, autoincrement=True)
+    hotel_id = Column(String(50), nullable=False)
     name = Column(String(100), nullable=False)
     address = Column(String(255), nullable=False)
     city = Column(String(100), nullable=False)
@@ -59,7 +59,7 @@ class Room(Base):
     __tablename__ = "Rooms"
 
     room_id = Column(Integer, primary_key=True, autoincrement=True)
-    hotel_id = Column(Integer, ForeignKey("Hotels.hotel_id"), nullable=False)
+    hotel_id = Column(String(50), ForeignKey("Hotels.hotel_id"), nullable=False)
     room_type = Column(String(50), nullable=False)
     price = Column(DECIMAL(10, 2), nullable=False)
     availability_status = Column(Enum(AvailabilityStatus), nullable=False)
@@ -105,7 +105,7 @@ class Review(Base):
     __tablename__ = "Reviews"
 
     review_id = Column(Integer, primary_key=True, autoincrement=True)
-    hotel_id = Column(Integer, ForeignKey("Hotels.hotel_id"), nullable=False)
+    hotel_id = Column(String(50), ForeignKey("Hotels.hotel_id"), nullable=False)
     user_id = Column(Integer, ForeignKey("Users.user_id"), nullable=False)
     rating = Column(Integer, nullable=False)
     user_comment = Column(Text)
