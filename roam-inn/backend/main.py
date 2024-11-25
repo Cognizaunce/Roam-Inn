@@ -403,3 +403,85 @@ def create_booking(
         # Handle errors (e.g., ForeignKey violations, validation errors)
         db.rollback()
         raise HTTPException(status_code=400, detail=f"Error creating booking: {str(e)}")
+
+#JSON API VERSION
+from pydantic import BaseModel, Field
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from datetime import date
+from models import Booking, PaymentStatus
+from database import get_db
+
+# Define a Pydantic model for the request body
+class BookingRequest(BaseModel):
+    user_id: int
+    room_id: int
+    check_in_date: date
+    check_out_date: date
+    total_price: float
+    payment_status: PaymentStatus = PaymentStatus.pending  # Default status is pending
+
+
+@app.post("/api/checkout-json")
+def create_booking(
+    booking_request: BookingRequest,  # Expecting a request body
+    db: Session = Depends(get_db),
+):
+    """
+    Creates a new booking in the database.
+    """
+    # Extract fields from the request model
+    user_id = booking_request.user_id
+    room_id = booking_request.room_id
+    check_in_date = booking_request.check_in_date
+    check_out_date = booking_request.check_out_date
+    total_price = booking_request.total_price
+    payment_status = booking_request.payment_status
+
+    # Validate that the check-in date is before the check-out date
+    if check_in_date >= check_out_date:
+        raise HTTPException(status_code=400, detail="Check-in date must be before the check-out date.")
+
+    # Validate total_price is positive
+    if total_price <= 0:
+        raise HTTPException(status_code=400, detail="Total price must be greater than zero.")
+
+    try:
+        # Create a new booking instance
+        new_booking = Booking(
+            user_id=user_id,
+            room_id=room_id,
+            check_in_date=check_in_date,
+            check_out_date=check_out_date,
+            total_price=total_price,
+            payment_status=payment_status,
+            created_on=datetime.utcnow(),
+            updated_on=datetime.utcnow(),
+        )
+
+        # Add the booking to the database
+        db.add(new_booking)
+        db.commit()
+        db.refresh(new_booking)
+
+        return {
+            "status": "success",
+            "message": "Booking created successfully",
+            "booking": {
+                "booking_id": new_booking.booking_id,
+                "user_id": new_booking.user_id,
+                "room_id": new_booking.room_id,
+                "check_in_date": new_booking.check_in_date,
+                "check_out_date": new_booking.check_out_date,
+                "total_price": float(new_booking.total_price),
+                "payment_status": new_booking.payment_status.value,
+                "created_on": new_booking.created_on,
+                "updated_on": new_booking.updated_on,
+            },
+        }
+
+    except Exception as e:
+        # Handle errors (e.g., ForeignKey violations, validation errors)
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Error creating booking: {str(e)}")
+
