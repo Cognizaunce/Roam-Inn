@@ -18,6 +18,10 @@ from fastapi.exceptions import HTTPException
 #for hotel address
 from utils import reverse_geocode
 
+# for admin-dashboard charts
+from sqlalchemy.sql import func
+from models import User, Booking
+
 # Load environment variables
 load_dotenv()
 
@@ -267,3 +271,34 @@ async def process_hotels(hotels: list[dict], db: Session = Depends(get_db)):
 async def get_hotels(city: str, db: Session = Depends(get_db)):
     hotels = get_hotels_by_city(db, city=city)
     return hotels
+
+# Endpoint: Get number of bookings per user
+@app.get("/api/bookings-per-user")
+def get_bookings_per_user(db: Session = Depends(get_db)):
+    """
+    Retrieves the number of bookings made by each user.
+    """
+    bookings_per_user = (
+        db.query(
+            User.user_id,
+            User.first_name,
+            User.last_name,
+            func.count(Booking.booking_id).label("total_bookings")
+        )
+        .join(Booking, User.user_id == Booking.user_id, isouter=True)  # Outer join to include users with 0 bookings
+        .group_by(User.user_id)
+        .all()
+    )
+
+    # Format the response
+    result = [
+        {
+            "user_id": user_id,
+            "first_name": first_name,
+            "last_name": last_name,
+            "total_bookings": total_bookings
+        }
+        for user_id, first_name, last_name, total_bookings in bookings_per_user
+    ]
+
+    return {"status": "success", "data": result}
