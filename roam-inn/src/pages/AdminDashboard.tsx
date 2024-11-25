@@ -10,13 +10,11 @@ const AdminDashboard: React.FC = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Check if admin is logged in
         const authToken = localStorage.getItem('authToken');
         if (!authToken) {
-            navigate('/admin-login'); // Redirect to login if not logged in
+            navigate('/admin-login');
         } else {
-            // Fetch the list of users with bookings
-            fetch('/api/bookings-per-user', {
+            fetch('/api/users', {
                 method: 'GET',
                 headers: {
                     Authorization: `Bearer ${authToken}`,
@@ -24,15 +22,16 @@ const AdminDashboard: React.FC = () => {
             })
                 .then((response) => response.json())
                 .then((data) => {
-                    if (data.status === 'success') {
-                        setUsers(data.data); // Assuming the API returns { status: "success", data: [...] }
-                    } else {
-                        setErrorMessage('Failed to load bookings data. Please try again.');
-                    }
+                    // Ensure total_bookings is present and set for each user
+                    const usersWithBookings = data.map((user: any) => ({
+                        ...user,
+                        total_bookings: user.total_bookings || 0, // Fallback if API doesn't include bookings
+                    }));
+                    setUsers(usersWithBookings);
                 })
                 .catch((error) => {
-                    setErrorMessage('Failed to load bookings data. Please try again.');
-                    console.error('Error fetching bookings per user:', error);
+                    setErrorMessage('Failed to load users. Please try again.');
+                    console.error('Error fetching users:', error);
                 });
         }
     }, [navigate]);
@@ -105,7 +104,7 @@ const AdminDashboard: React.FC = () => {
             <Header />
 
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-600 to-blue-400">
-                <div className="bg-white p-8 rounded-lg shadow-lg w-full sm:w-96">
+                <div className="bg-white p-8 rounded-lg shadow-lg">
                     {errorMessage && (
                         <p className="bg-red-100 text-red-800 p-3 rounded mb-4 text-center">
                             {errorMessage}
@@ -114,53 +113,61 @@ const AdminDashboard: React.FC = () => {
 
                     <h2 className="text-2xl font-bold text-center mb-6 w-full">Admin Dashboard</h2>
 
-                    <table className="min-w-full table-auto bg-white mb-8">
-                        <thead>
-                            <tr>
-                                <th className="px-4 py-2 text-left">Name</th>
-                                <th className="px-4 py-2 text-left">Email</th>
-                                <th className="px-4 py-2 text-left">Bookings</th>
-                                <th className="px-4 py-2 text-left">User Type</th>
-                                <th className="px-4 py-2 text-left">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {users.map((user) => (
-                                <tr key={user.user_id} className="hover:bg-gray-100 border-t border-b">
-                                    <td className="px-4 py-2">
-                                        {user.first_name} {user.last_name}
-                                    </td>
-                                    <td className="px-4 py-2">{user.email}</td>
-                                    <td className="px-4 py-2">{user.total_bookings}</td>
-                                    <td className="px-4 py-2">{user.user_type}</td>
-                                    <td className="px-4 py-2 flex space-x-2 justify-start">
-                                        {user.user_type !== 'admin' && (
-                                            <button
-                                                onClick={() => handlePromoteUser(user.user_id)}
-                                                className="text-green-500 hover:text-green-700"
-                                            >
-                                                Promote to Admin
-                                            </button>
-                                        )}
-                                        {user.user_type === 'admin' && (
-                                            <button
-                                                onClick={() => handleDemoteUser(user.user_id)}
-                                                className="text-yellow-500 hover:text-yellow-700"
-                                            >
-                                                Demote to User
-                                            </button>
-                                        )}
-                                        <button
-                                            onClick={() => handleDeleteUser(user.user_id)}
-                                            className="text-red-500 hover:text-red-700"
-                                        >
-                                            Delete
-                                        </button>
-                                    </td>
+                    <div className="w-full">
+                        <table className="table-auto border-collapse w-auto bg-white mb-8">
+                            <thead>
+                                <tr>
+                                    <th className="px-4 py-2 text-left">Name</th>
+                                    <th className="px-4 py-2 text-left">Email</th>
+                                    <th className="px-4 py-2 text-left">Bookings</th>
+                                    <th className="px-4 py-2 text-left">User Type</th>
+                                    <th className="px-4 py-2 text-left">Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {users.map((user) => (
+                                    <tr
+                                        key={user.user_id}
+                                        className="hover:bg-gray-100 border-t border-b"
+                                    >
+                                        <td className="px-4 py-2">
+                                            {user.first_name} {user.last_name}
+                                        </td>
+                                        <td className="px-4 py-2">{user.email}</td>
+                                        <td className="px-4 py-2">{user.total_bookings}</td>
+                                        <td className="px-4 py-2">{user.user_type}</td>
+                                        <td className="px-4 py-2 flex space-x-2 justify-start">
+                                            {user.user_type === 'admin' ? (
+                                                <button
+                                                    onClick={() =>
+                                                        handleDemoteUser(user.user_id)
+                                                    }
+                                                    className="text-yellow-500 hover:text-yellow-700"
+                                                >
+                                                    Demote to User
+                                                </button>
+                                            ) : (
+                                                <button
+                                                    onClick={() =>
+                                                        handlePromoteUser(user.user_id)
+                                                    }
+                                                    className="text-green-500 hover:text-green-700"
+                                                >
+                                                    Promote to Admin
+                                                </button>
+                                            )}
+                                            <button
+                                                onClick={() => handleDeleteUser(user.user_id)}
+                                                className="text-red-500 hover:text-red-700"
+                                            >
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
 
                     <div className="w-full h-64">
                         <h3 className="text-lg font-semibold mb-4">Bookings Overview</h3>
