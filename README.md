@@ -29,9 +29,9 @@
 
 2. **Setup database | Make sure you have database connection setup in MySQL and database name is "roaminn"**
 
-   **Run the sql commands in the "Creating SQL.sql"  ---> in project directory**
+   **1. Run the sql commands in the "Creating SQL.sql"  ---> in project directory**
 
-   **Run the following commands in your terminal once databse schema is initialized | Make sure to replace values according to your connection**
+   **2. Run the following commands in your terminal once databse schema is initialized | Make sure to replace values according to your connection**
     ```bash
       export MYSQL_USER=your_username
       export MYSQL_PASSWORD=your_password
