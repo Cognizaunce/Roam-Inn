@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { searchHotels, processHotels } from '../services/hotelService.ts'; // Import both service functions
+import Header from '../components/header.tsx'; // Include the Header component
 
 const DashboardPage: React.FC = () => {
     const [selectedCity, setSelectedCity] = useState('LAX'); // Pre-select 'LAX'
@@ -7,6 +9,7 @@ const DashboardPage: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [hotelData, setHotelData] = useState<any>(null);
+    const navigate = useNavigate(); // Using useNavigate hook for navigation
 
     // Validate inputs
     const validateInputs = () => {
@@ -38,12 +41,15 @@ const DashboardPage: React.FC = () => {
 
             // Parse the hotels data to extract hotelId and geoCode
             const hotels = data?.data?.map((hotel: any) => ({
-                hotelID: hotel.hotelId, // Using 'hotelId' as per your response structure
+                hotelID: hotel.hotelId,
+                hotelName: hotel.name,
                 geoCode: {
                     latitude: hotel.geoCode.latitude,
                     longitude: hotel.geoCode.longitude,
                 },
             }));
+
+            console.log(hotels)
 
             if (!hotels || hotels.length === 0) {
                 throw new Error('No valid hotels data found.');
@@ -53,6 +59,10 @@ const DashboardPage: React.FC = () => {
             const processedHotels = await processHotels(hotels);
             setHotelData(processedHotels); // Set the processed hotel data
             setErrorMessage('');
+
+            // Redirect to the HotelView page and pass hotel data as state
+            navigate('/hotel-View', { state: { hotels: processedHotels } });
+
         } catch (error: any) {
             console.error('Error submitting data:', error);
             setErrorMessage('Unable to fetch or process hotels. Please try again later.');
@@ -62,57 +72,76 @@ const DashboardPage: React.FC = () => {
     };
 
     return (
-        <div style={{ textAlign: 'center', marginTop: '20px' }}>
-            <h1>Roam Inn</h1>
+        <div className="min-h-screen bg-gradient-to-r from-blue-600 to-blue-400">
+            <Header /> {/* Include the Header component */}
 
-            {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
+            {/* Main content container */}
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="bg-white p-8 rounded-lg shadow-lg w-full sm:w-96">
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label>
-                        Select City:
-                        <select
-                            value={selectedCity}
-                            onChange={(e) => setSelectedCity(e.target.value)}
-                            style={{ margin: '10px', padding: '5px' }}
+                    {/* Error message */}
+                    {errorMessage && (
+                        <div className="bg-red-100 text-red-800 p-3 rounded mb-4 text-center">
+                            {errorMessage}
+                        </div>
+                    )}
+
+                    <h2 className="text-2xl font-bold text-center mb-6">Find Your Hotel</h2>
+
+                    {/* Search Form */}
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                            <label className="block text-left font-semibold">
+                                Select City:
+                            </label>
+                            <select
+                                value={selectedCity}
+                                onChange={(e) => setSelectedCity(e.target.value)}
+                                className="w-full p-2 border border-gray-300 rounded-md"
+                            >
+                                <option value="LAX">Los Angeles</option>
+                                <option value="YYZ">Toronto</option>
+                                <option value="ATL">Atlanta</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label className="block text-left font-semibold">
+                                Distance (km):
+                            </label>
+                            <input
+                                type="number"
+                                value={distance}
+                                onChange={(e) => setDistance(parseInt(e.target.value, 10))}
+                                placeholder="Enter distance"
+                                min="2"
+                                className="w-full p-2 border border-gray-300 rounded-md"
+                            />
+                        </div>
+
+                        <button
+                            type="submit"
+                            className="w-full py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600"
                         >
-                            <option value="LAX">LAX</option>
-                        </select>
-                    </label>
-                </div>
+                            {loading ? 'Loading...' : 'Search'}
+                        </button>
+                    </form>
 
-                <div style={{ margin: '10px' }}>
-                    <label>
-                        Distance (km):
-                        <input
-                            type="number"
-                            value={distance}
-                            onChange={(e) => setDistance(parseInt(e.target.value, 10))}
-                            placeholder="Enter distance"
-                            min="2"
-                            style={{ marginLeft: '10px', padding: '5px' }}
-                        />
-                    </label>
+                    {/* Render processed hotel data */}
+                    {hotelData && (
+                        <div className="mt-6">
+                            <h3 className="text-xl font-bold text-center">Processed Hotels:</h3>
+                            <ul className="space-y-2 mt-4">
+                                {hotelData?.processed_hotels?.map((hotel: any, index: number) => (
+                                    <li key={index} className="p-4 border border-gray-200 rounded-md">
+                                        <span className="font-semibold">{hotel.name}</span> - {hotel.city}, {hotel.country}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
                 </div>
-
-                <button type="submit" style={{ padding: '10px 20px' }}>
-                    {loading ? 'Loading...' : 'Search'}
-                </button>
-            </form>
-
-            {/* Render processed hotel data */}
-            {hotelData && (
-                <div style={{ marginTop: '20px' }}>
-                    <h3>Processed Hotels:</h3>
-                    <ul>
-                        {hotelData?.processed_hotels?.map((hotel: any, index: number) => (
-                            <li key={index}>
-                                {hotel.name} - {hotel.city}, {hotel.country}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
+            </div>
         </div>
     );
 };

@@ -42,7 +42,7 @@ CREATE TABLE Users (
 
 -- 2. Create The Hotels Data table
 CREATE TABLE Hotels (
-    hotel_id   PRIMARY KEY AUTO_INCREMENT,
+    hotel_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(100) NOT NULL,
     address VARCHAR (255) NOT NULL,
     city VARCHAR(100) NOT NULL,
@@ -54,7 +54,17 @@ CREATE TABLE Hotels (
     -- reviews = relationship("Review", back_populates="hotel")
 );
 
--- 3. Create the Bookings table
+-- 3 Create the Rooms Table
+CREATE TABLE Rooms (
+    room_id INT PRIMARY KEY AUTO_INCREMENT,
+    hotel_id VARCHAR(50) NOT NULL,
+    room_type VARCHAR(50) NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    availability_status ENUM('available', 'booked') NOT NULL,
+    FOREIGN KEY (hotel_id) REFERENCES Hotels(hotel_id) ON DELETE CASCADE
+);
+
+-- 4. Create the Bookings table
 CREATE TABLE Bookings (
     booking_id INT PRIMARY KEY AUTO_INCREMENT,
     user_id INT NOT NULL,
@@ -67,24 +77,8 @@ CREATE TABLE Bookings (
     updated_on TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (room_id) REFERENCES Rooms (room_id) ON DELETE CASCADE
-    -- make sql code for hotel and bookings
-    --  hotel = relationship("Hotel", back_populates="rooms")
-    -- bookings = relationship("Booking", back_populates="room")
 );
 
--- 4 Create the Rooms Table
-CREATE TABLE Rooms (
-    room_id INT PRIMARY KEY AUTO_INCREMENT,
-    hotel_id INT NOT NULL,
-    room_type VARCHAR(50) NOT NULL,
-    price DECIMAL(10, 2) NOT NULL,
-    availability_status ENUM('available', 'booked') NOT NULL,
-    FOREIGN KEY (hotel_id) REFERENCES Hotels(hotel_id) ON DELETE CASCADE
-    -- sql for user, room, payment
-    --  user = relationship("User", back_populates="bookings")
-    -- room = relationship("Room", back_populates="bookings")
-    -- payment = relationship("Payment", back_populates="booking")
-);
 
 -- 5. Create the Payments Table
 CREATE TABLE Payments (
@@ -105,7 +99,7 @@ CREATE TABLE Payments (
 -- 6. Create the Reviews Table
 CREATE TABLE Reviews(
     review_id INT PRIMARY KEY AUTO_INCREMENT,
-    hotel_id INT NOT NULL,
+    hotel_id VARCHAR(50) NOT NULL,
     user_id INT NOT NULL,
     rating INT CHECK (rating BETWEEN 1 AND 5),
     user_comment TEXT,
