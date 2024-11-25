@@ -4,10 +4,8 @@ import LandingPage from './pages/LandingPage.tsx';
 import CreateAccount from './pages/CreateAccount.tsx';
 import LoginPage from './pages/LoginPage.tsx';
 import AdminLogin from './pages/AdminLogin.tsx';
-<<<<<<< HEAD
-=======
 import DashboardPage from './pages/DashboardPage.tsx';
->>>>>>> origin/prod
+import CheckoutPage from './pages/CheckoutPage.tsx';
 
 const App: React.FC = () => {
     return (
@@ -18,6 +16,7 @@ const App: React.FC = () => {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/admin-login" element={<AdminLogin />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/checkout-page" element={<CheckoutPage />} />
             </Routes>
         </Router>
     );
