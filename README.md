@@ -6,6 +6,11 @@
 
 - **Node.js**: Make sure you have Node.js installed. You can download it from [nodejs.org](https://nodejs.org).
 
+- **MySQL**: download the MySQL installer from its official page here: [MySQL Community Downloads](https://dev.mysql.com/downloads/)
+   or directly access the [MySQL Installer for Windows](https://dev.mysql.com/downloads/installer/).
+
+- **Python** Get the latest Python version for your operating system from the [official Python download page](https://www.python.org/downloads/).
+
 ## Setup
 
 1. **Clone the Repository**  
@@ -22,7 +27,7 @@
       cd roam-inn/backend
       ```
 
-2. **Setup database | Make sure MySQL workbench is installed | Make sure you have database connection setup in MySQL and datbase name is "roaminn"**
+2. **Setup database | Make sure you have database connection setup in MySQL and database name is "roaminn"**
 
    **Run the sql commands in the "Creating SQL.sql"  ---> in project directory**
 
