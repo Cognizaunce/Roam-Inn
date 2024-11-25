@@ -10,6 +10,52 @@ export const searchHotels = async (city: string, radius: number) => {
     }
 };
 
+export const hotelInfo = async (
+    hotel_id: string[], // Single hotel ID sent as an array
+    adults: number,
+    check_in: string,
+    check_out: string,
+    rooms: number
+) => {
+    try {
+        // Stringify the hotel_id array for the query parameter
+        const query = new URLSearchParams({
+            hotel_id: JSON.stringify(hotel_id), // Serialize array as a JSON string
+            adults: adults.toString(),
+            check_in,
+            check_out,
+            rooms: rooms.toString(),
+        });
+
+        const response = await fetch(`/api/hotel-info?${query.toString()}`);
+        if (!response.ok) {
+            throw new Error("Failed to fetch hotel info");
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error fetching hotel info:", error);
+    }
+};
+
+export const hotelReviews = async (hotel_id: string[]) => {
+    try {
+        // Stringify the hotel_id array for the query parameter
+        const query = new URLSearchParams({
+            hotel_id: JSON.stringify(hotel_id), // Serialize array as a JSON string
+        });
+
+        const response = await fetch(`/api/hotel-review?${query.toString()}`);
+        if (!response.ok) {
+            throw new Error("Failed to fetch hotel reviews");
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error fetching hotel reviews:", error);
+    }
+};
+
+
+
 export const processHotels = async (hotels: any[]) => {
     try {
         // Make a POST request to process-hotels endpoint

@@ -1,20 +1,29 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { searchHotels, processHotels } from '../services/hotelService.ts'; // Import both service functions
-import Header from '../components/header.tsx'; // Include the Header component
+import { searchHotels, processHotels } from '../services/hotelService.ts';
+import Header from '../components/header.tsx';
 
 const DashboardPage: React.FC = () => {
-    const [selectedCity, setSelectedCity] = useState('LAX'); // Pre-select 'LAX'
-    const [distance, setDistance] = useState<number>(2); // Default distance set to 2 km
+    const [selectedCity, setSelectedCity] = useState('LAX'); // Default city
+    const [distance, setDistance] = useState<number>(2); // Default distance
+    const [adults, setAdults] = useState<number>(1); // Default adults
+    const [rooms, setRooms] = useState<number>(1); // Default rooms
+    const [checkInDate, setCheckInDate] = useState<string>('');
+    const [checkOutDate, setCheckOutDate] = useState<string>('');
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [hotelData, setHotelData] = useState<any>(null);
-    const navigate = useNavigate(); // Using useNavigate hook for navigation
+    const navigate = useNavigate();
 
     // Validate inputs
     const validateInputs = () => {
         if (distance <= 1) {
             return 'Distance must be greater than 1.';
+        }
+        if (!checkInDate || !checkOutDate) {
+            return 'Please select both check-in and check-out dates.';
+        }
+        if (new Date(checkInDate) >= new Date(checkOutDate)) {
+            return 'Check-out date must be after check-in date.';
         }
         return null;
     };
@@ -22,8 +31,7 @@ const DashboardPage: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setErrorMessage('');
-        setHotelData(null);
-
+        
         const validationError = validateInputs();
         if (validationError) {
             setErrorMessage(validationError);
@@ -32,14 +40,8 @@ const DashboardPage: React.FC = () => {
 
         setLoading(true);
         try {
-            // Fetch hotels data from the first API
+            // Fetch and process hotel data
             const data = await searchHotels(selectedCity, distance);
-
-            if (!data) {
-                throw new Error('No hotels found or failed to fetch hotels.');
-            }
-
-            // Parse the hotels data to extract hotelId and geoCode
             const hotels = data?.data?.map((hotel: any) => ({
                 hotelID: hotel.hotelId,
                 hotelName: hotel.name,
@@ -49,23 +51,18 @@ const DashboardPage: React.FC = () => {
                 },
             }));
 
-            console.log(hotels)
-
             if (!hotels || hotels.length === 0) {
                 throw new Error('No valid hotels data found.');
             }
 
-            // Use the processHotels function to process the extracted data
             const processedHotels = await processHotels(hotels);
-            setHotelData(processedHotels); // Set the processed hotel data
-            setErrorMessage('');
 
-            // Redirect to the HotelView page and pass hotel data as state
-            navigate('/hotel-View', { state: { hotels: processedHotels } });
+            // Navigate to hotel view with all necessary data
+            navigate('/hotel-view', { state: { hotels:processedHotels, check_in: checkInDate, check_out: checkOutDate, rooms: rooms, adults: adults } });
 
-        } catch (error: any) {
-            console.error('Error submitting data:', error);
-            setErrorMessage('Unable to fetch or process hotels. Please try again later.');
+        } catch (error) {
+            console.error('Error fetching hotels:', error);
+            setErrorMessage('Unable to fetch hotels. Please try again later.');
         } finally {
             setLoading(false);
         }
@@ -73,13 +70,10 @@ const DashboardPage: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-r from-blue-600 to-blue-400">
-            <Header /> {/* Include the Header component */}
+            <Header />
 
-            {/* Main content container */}
             <div className="flex justify-center items-center min-h-screen">
                 <div className="bg-white p-8 rounded-lg shadow-lg w-full sm:w-96">
-
-                    {/* Error message */}
                     {errorMessage && (
                         <div className="bg-red-100 text-red-800 p-3 rounded mb-4 text-center">
                             {errorMessage}
@@ -88,12 +82,9 @@ const DashboardPage: React.FC = () => {
 
                     <h2 className="text-2xl font-bold text-center mb-6">Find Your Hotel</h2>
 
-                    {/* Search Form */}
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <label className="block text-left font-semibold">
-                                Select City:
-                            </label>
+                            <label className="block text-left font-semibold">Select City:</label>
                             <select
                                 value={selectedCity}
                                 onChange={(e) => setSelectedCity(e.target.value)}
@@ -106,15 +97,54 @@ const DashboardPage: React.FC = () => {
                         </div>
 
                         <div>
-                            <label className="block text-left font-semibold">
-                                Distance (km):
-                            </label>
+                            <label className="block text-left font-semibold">Distance (km):</label>
                             <input
                                 type="number"
                                 value={distance}
                                 onChange={(e) => setDistance(parseInt(e.target.value, 10))}
-                                placeholder="Enter distance"
+                                className="w-full p-2 border border-gray-300 rounded-md"
                                 min="2"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-left font-semibold">Number of Adults:</label>
+                            <input
+                                type="number"
+                                value={adults}
+                                onChange={(e) => setAdults(parseInt(e.target.value, 10))}
+                                className="w-full p-2 border border-gray-300 rounded-md"
+                                min="1"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-left font-semibold">Number of Rooms:</label>
+                            <input
+                                type="number"
+                                value={rooms}
+                                onChange={(e) => setRooms(parseInt(e.target.value, 10))}
+                                className="w-full p-2 border border-gray-300 rounded-md"
+                                min="1"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-left font-semibold">Check-In Date:</label>
+                            <input
+                                type="date"
+                                value={checkInDate}
+                                onChange={(e) => setCheckInDate(e.target.value)}
+                                className="w-full p-2 border border-gray-300 rounded-md"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-left font-semibold">Check-Out Date:</label>
+                            <input
+                                type="date"
+                                value={checkOutDate}
+                                onChange={(e) => setCheckOutDate(e.target.value)}
                                 className="w-full p-2 border border-gray-300 rounded-md"
                             />
                         </div>
@@ -126,20 +156,6 @@ const DashboardPage: React.FC = () => {
                             {loading ? 'Loading...' : 'Search'}
                         </button>
                     </form>
-
-                    {/* Render processed hotel data */}
-                    {hotelData && (
-                        <div className="mt-6">
-                            <h3 className="text-xl font-bold text-center">Processed Hotels:</h3>
-                            <ul className="space-y-2 mt-4">
-                                {hotelData?.processed_hotels?.map((hotel: any, index: number) => (
-                                    <li key={index} className="p-4 border border-gray-200 rounded-md">
-                                        <span className="font-semibold">{hotel.name}</span> - {hotel.city}, {hotel.country}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    )}
                 </div>
             </div>
         </div>

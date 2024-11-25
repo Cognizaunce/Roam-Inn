@@ -74,6 +74,64 @@ class UpdateUserRequest(BaseModel):
     phone_number: str = None
     user_type: str = None  # To promote to 'admin' or change user type
 
+@app.get("/api/hotel-review")
+async def get_hotel_reviews(
+    hotel_id: str,  # Hotel ID as a string
+    db: Session = Depends(get_db)
+):
+    """
+    Fetch hotel reviews using the Amadeus API.
+
+    Parameters:
+    - hotel_id: ID of the hotel (string).
+    """
+    token = get_amadeus_token()
+    # Correct URL format for hotelIds
+    url = f"https://test.api.amadeus.com/v2/e-reputation/hotel-sentiments?hotelIds=[{hotel_id}]"
+    headers = {"Authorization": f"Bearer {token}"}
+
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch hotel reviews: {str(e)}")
+
+
+
+@app.get("/api/hotel-info")
+async def get_hotel_info(
+    hotel_id: str,  # Hotel ID as a string
+    adults: int,
+    check_in: str,
+    check_out: str,
+    rooms: int,
+    db: Session = Depends(get_db)
+):
+    """
+    Fetch hotel offers and information using the Amadeus API.
+
+    Parameters:
+    - hotel_id: ID of the hotel (string).
+    - adults: Number of adults (integer).
+    - check_in: Check-in date (string, format YYYY-MM-DD).
+    - check_out: Check-out date (string, format YYYY-MM-DD).
+    - rooms: Number of rooms required (integer).
+    """
+    token = get_amadeus_token()
+    # Correct URL format for hotelIds
+    url = f"https://test.api.amadeus.com/v3/shopping/hotel-offers?hotelIds=[{hotel_id}]&adults={adults}&checkInDate={check_in}&checkOutDate={check_out}&roomQuantity={rooms}"
+    headers = {"Authorization": f"Bearer {token}"}
+
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch hotel info: {str(e)}")
+
+
+
 # Endpoint: Get all users
 @app.get("/api/users")
 def get_all_users(db: Session = Depends(get_db)):
@@ -243,26 +301,6 @@ async def process_hotels(hotels: list[dict], db: Session = Depends(get_db)):
         "processed_hotels": processed_hotels,
         "message": f"{len(processed_hotels)} hotels processed and inserted into the database.",
     }
-#these endpoints below are not correct, must update according to amadeus docs
-# @app.get("/api/populate-hotels/")
-# async def populate_hotels(city: str, db: Session = Depends(get_db)):
-#     token = get_amadeus_token()
-#     url = f"https://test.api.amadeus.com/v1/reference-data/locations/hotels/by-city?cityCode={city}&radius=15&radiusUnit=KM&hotelSource=ALL"
-#     headers = {"Authorization": f"Bearer {token}"}
-#     response = requests.get(url, headers=headers)
-#     hotels_data = response.json().get("data", [])
-
-#     # Insert each hotel into the database
-#     for hotel in hotels_data:
-#         create_hotel(
-#             db=db,
-#             name=hotel.get("name"),
-#             city=city,
-#             rating=hotel.get("rating", 0),  # Adjust based on the actual structure
-#             address=hotel.get("address", {}).get("lines", [""])[0]
-#         )
-    
-#     return {"message": "Hotels data populated in database"}
 
 @app.get("/api/hotels/")
 async def get_hotels(city: str, db: Session = Depends(get_db)):
