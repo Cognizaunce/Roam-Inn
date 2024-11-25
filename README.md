@@ -9,7 +9,7 @@
 - **MySQL**: download the MySQL installer from its official page here: [MySQL Community Downloads](https://dev.mysql.com/downloads/)
    or directly access the [MySQL Installer for Windows](https://dev.mysql.com/downloads/installer/).
 
-- **Python** Get the latest Python version for your operating system from the [official Python download page](https://www.python.org/downloads/).
+- **Python**: Get the latest Python version for your operating system from the [official Python download page](https://www.python.org/downloads/).
 
 ## Setup
 
