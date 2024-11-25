@@ -6,6 +6,7 @@ import '../styling/tailwind.css';
 
 const AdminDashboard: React.FC = () => {
     const [users, setUsers] = useState<any[]>([]);
+    const [bookingsData, setBookingsData] = useState<any[]>([]);  // New state for bookings data
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
@@ -14,6 +15,7 @@ const AdminDashboard: React.FC = () => {
         if (!authToken) {
             navigate('/admin-login');
         } else {
+            // Fetching users data
             fetch('/api/users', {
                 method: 'GET',
                 headers: {
@@ -32,6 +34,30 @@ const AdminDashboard: React.FC = () => {
                 .catch((error) => {
                     setErrorMessage('Failed to load users. Please try again.');
                     console.error('Error fetching users:', error);
+                });
+
+            // Fetching bookings data for the graph
+            fetch('/api/bookings-per-user', {
+                method: 'GET',
+                headers: {
+                    Authorization: `Bearer ${authToken}`,
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.status === 'success') {
+                        const bookings = data.data.map((booking: any) => ({
+                            ...booking,
+                            total_bookings: booking.total_bookings || 0, // Fallback to 0 if no bookings
+                        }));
+                        setBookingsData(bookings);
+                    } else {
+                        setErrorMessage('Failed to load bookings data. Please try again.');
+                    }
+                })
+                .catch((error) => {
+                    setErrorMessage('Failed to load bookings data. Please try again.');
+                    console.error('Error fetching bookings per user:', error);
                 });
         }
     }, [navigate]);
@@ -126,10 +152,7 @@ const AdminDashboard: React.FC = () => {
                             </thead>
                             <tbody>
                                 {users.map((user) => (
-                                    <tr
-                                        key={user.user_id}
-                                        className="hover:bg-gray-100 border-t border-b"
-                                    >
+                                    <tr key={user.user_id} className="hover:bg-gray-100 border-t border-b">
                                         <td className="px-4 py-2">
                                             {user.first_name} {user.last_name}
                                         </td>
@@ -169,10 +192,11 @@ const AdminDashboard: React.FC = () => {
                         </table>
                     </div>
 
+                    {/* Bookings Overview Graph */}
                     <div className="w-full h-64">
                         <h3 className="text-lg font-semibold mb-4">Bookings Overview</h3>
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={users}>
+                            <BarChart data={bookingsData}>
                                 <XAxis dataKey="first_name" />
                                 <YAxis />
                                 <Tooltip />
