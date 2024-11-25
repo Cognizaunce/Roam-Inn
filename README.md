@@ -22,7 +22,7 @@
       cd roam-inn/backend
       ```
 
-2. Setup database | Make sure MySQL workbench is installed | Make sure you have database connection setup in MySQL and datbase name is "roaminn"
+2. **Setup database | Make sure MySQL workbench is installed | Make sure you have database connection setup in MySQL and datbase name is "roaminn"**
 
    **Run the sql commands in the "Creating SQL.sql"  ---> in project directory**
 
@@ -35,7 +35,7 @@
       export MYSQL_DB=your_database_name
       ```
 
-4. ## Setup Python environment | make sure you have any python 3 version installed
+4. **Setup Python environment | make sure you have any python 3 version installed**
 
    1. **To set up the Python environment, run the following command**   
       ```bash
