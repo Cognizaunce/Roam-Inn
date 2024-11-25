@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../styling/tailwind.css';
+import { useNavigate } from 'react-router-dom';
 import { searchHotels, processHotels } from '../services/hotelService.ts'; // Import both service functions
 import Header from '../components/header.tsx'; // Include the Header component
 
@@ -9,6 +9,7 @@ const DashboardPage: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [hotelData, setHotelData] = useState<any>(null);
+    const navigate = useNavigate(); // Using useNavigate hook for navigation
 
     // Validate inputs
     const validateInputs = () => {
@@ -58,6 +59,10 @@ const DashboardPage: React.FC = () => {
             const processedHotels = await processHotels(hotels);
             setHotelData(processedHotels); // Set the processed hotel data
             setErrorMessage('');
+
+            // Redirect to the HotelView page and pass hotel data as state
+            navigate('/hotel-View', { state: { hotels: processedHotels } });
+
         } catch (error: any) {
             console.error('Error submitting data:', error);
             setErrorMessage('Unable to fetch or process hotels. Please try again later.');
@@ -96,6 +101,7 @@ const DashboardPage: React.FC = () => {
                             >
                                 <option value="LAX">Los Angeles</option>
                                 <option value="YYZ">Toronto</option>
+                                <option value="ATL">Atlanta</option>
                             </select>
                         </div>
 

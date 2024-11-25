@@ -217,6 +217,8 @@ async def process_hotels(hotels: list[dict], db: Session = Depends(get_db)):
             "postal_code": address_details["postal_code"] or "00000",
         }
 
+        processed_hotels.append(hotel_data)  # Append to list
+
         # Insert into database if it doesn't already exist
         try:
             new_hotel = Hotel(
@@ -231,7 +233,6 @@ async def process_hotels(hotels: list[dict], db: Session = Depends(get_db)):
             db.add(new_hotel)
             db.commit()
             db.refresh(new_hotel)
-            processed_hotels.append(hotel_data)  # Append only if successfully added
 
         except IntegrityError:
             db.rollback()  # Avoid breaking the loop if duplicate entry or other DB issue
