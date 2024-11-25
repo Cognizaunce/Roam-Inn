@@ -5,6 +5,7 @@ import CreateAccount from './pages/CreateAccount.tsx';
 import LoginPage from './pages/LoginPage.tsx';
 import AdminLogin from './pages/AdminLogin.tsx';
 import DashboardPage from './pages/DashboardPage.tsx';
+import CheckoutPage from './pages/CheckoutPage.tsx';
 import AdminDashboard from './pages/AdminDashboard.tsx';
 import HotelView from './pages/HotelView.tsx';
 
@@ -17,6 +18,7 @@ const App: React.FC = () => {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/admin-login" element={<AdminLogin />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/checkout-page" element={<CheckoutPage />} />
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
                 <Route path="/admin-dashboard" element={<AdminDashboard />} />
                 <Route path="/hotel-view" element={<HotelView />} />
