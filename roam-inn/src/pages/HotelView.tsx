@@ -41,7 +41,11 @@ const HotelView: React.FC = () => {
 
     const navigate = useNavigate();
     const handleCheckout = () => {
-        navigate('/checkout-page');
+        if (selectedHotel) {
+            navigate('/checkout-page', { state: { selectedHotel } });
+        } else {
+            alert("Please select a hotel first.");
+        }
     };
 
     const handleDownloadJson = () => {
@@ -62,7 +66,7 @@ const HotelView: React.FC = () => {
             alert("Please select a hotel first.");
         }
     };
-
+    
     return (
         <div className="min-h-screen flex flex-col">
             {/* Header */}
