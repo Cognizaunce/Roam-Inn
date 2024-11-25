@@ -35,83 +35,139 @@ const HotelView: React.FC = () => {
         navigate('/checkout-page');
     };
 
+    // Function to handle downloading JSON
+    const handleDownloadJson = () => {
+        if (selectedHotel) {
+            const dataStr = JSON.stringify(selectedHotel, null, 2); // Convert to JSON with pretty-print
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+
+            // Create a temporary anchor element to trigger download
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${selectedHotel.details?.hotel?.name || 'hotel-details'}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            // Revoke the blob URL to release memory
+            URL.revokeObjectURL(url);
+        } else {
+            alert("Please select a hotel first.");
+        }
+    };
+
     return (
-        <div>
-            <Header /> {/* Include the Header component */}
-        <div className="flex p-8 bg-gradient-to-r from-blue-600 to-blue-400">
-            {/* Hotel List Section */}
-            <div className="w-1/3 p-4 overflow-y-scroll max-h-screen no-scrollbar">
-                <h2 className="text-2xl font-bold mb-4">Hotel List</h2>
-                <div>
-                    {hotels?.map((hotel: any, index: number) => (
-                        <div
-                            key={hotel.hotelID}
-                            className="p-4 border border-gray-200 rounded-md mb-4 cursor-pointer hover:bg-gray-100"
-                            onClick={() => handleHotelClick(hotel.name)}
-                        >
-                            <h3 className="font-semibold">{hotel.name}</h3>
-                            <p>{hotel.address}</p>
-                        </div>
-                    ))}
+        <div className="min-h-screen flex flex-col">
+            {/* Header at the Top */}
+            <Header />
+    
+            {/* Main Content */}
+            <div className="flex flex-grow p-8 bg-gradient-to-r from-blue-600 to-blue-400">
+                {/* Hotel List Section */}
+                <div className="w-1/3 p-4 overflow-y-scroll max-h-screen no-scrollbar">
+                    <h2 className="text-2xl font-bold mb-4">Hotel List</h2>
+                    <div>
+                        {hotels?.map((hotel: any, index: number) => (
+                            <div
+                                key={hotel.hotelID}
+                                className="p-4 border border-gray-200 rounded-md mb-4 cursor-pointer hover:bg-gray-100"
+                                onClick={() => handleHotelClick(hotel.name)}
+                            >
+                                <h3 className="font-semibold">{hotel.name}</h3>
+                                <p>{hotel.address}</p>
+                            </div>
+                        ))}
+                    </div>
+                    <button
+                        type="submit"
+                        onClick={handleCheckout}
+                        className="w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 transition duration-200"
+                    >
+                        Checkout
+                    </button>
                 </div>
-                <button
-                            type="submit"
-                            onClick={handleCheckout}
-                            className="w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 transition duration-200"
-                        >
-                    Checkout
-                </button>
-            </div>
-
-            {/* Hotel Details Section */}
-            <div className="w-2/3 p-4 bg-white rounded-lg shadow-md overflow-y-scroll max-h-screen">
-                <h2 className="text-3xl font-bold mb-4">Hotel Details</h2>
-                {selectedHotel ? (
-                    <>
-                        <div>
-                            <h3 className="text-xl font-semibold">{selectedHotel.details?.hotel?.name}</h3>
-                            <p><strong>Location:</strong> {selectedHotel.details?.hotel?.cityCode}</p>
-                            <p><strong>Coordinates:</strong> Latitude: {selectedHotel.details?.hotel?.latitude}, Longitude: {selectedHotel.details?.hotel?.longitude}</p>
-
-                            {/* Offer Details */}
-                            <div className="mt-4">
-                                <h4 className="font-semibold">Room Type: {selectedHotel.details?.offers[0]?.room?.typeEstimated?.category}</h4>
-                                <p><strong>Beds:</strong> {selectedHotel.details?.offers[0]?.room?.typeEstimated?.beds} x {selectedHotel.details?.offers[0]?.room?.typeEstimated?.bedType}</p>
-                                <p>{selectedHotel.details?.offers[0]?.room?.description?.text}</p>
-
-                                <h5 className="mt-2 text-lg font-semibold">Price: {selectedHotel.details?.offers[0]?.price?.total} {selectedHotel.details?.offers[0]?.price?.currency}</h5>
-                                <p><strong>Check-in:</strong> {selectedHotel.details?.offers[0]?.checkInDate}</p>
-                                <p><strong>Check-out:</strong> {selectedHotel.details?.offers[0]?.checkOutDate}</p>
+    
+                {/* Hotel Details Section */}
+                <div className="w-2/3 p-4 bg-white rounded-lg shadow-md overflow-y-scroll max-h-screen">
+                    <h2 className="text-3xl font-bold mb-4">Hotel Details</h2>
+                    <button
+                        onClick={handleDownloadJson}
+                        className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition duration-200 mb-4"
+                    >
+                        Download Hotel Data
+                    </button>
+                    {selectedHotel ? (
+                        <>
+                            <div>
+                                <h3 className="text-xl font-semibold">{selectedHotel.details?.hotel?.name}</h3>
+                                <p>
+                                    <strong>Location:</strong> {selectedHotel.details?.hotel?.cityCode}
+                                </p>
+                                <p>
+                                    <strong>Coordinates:</strong> Latitude: {selectedHotel.details?.hotel?.latitude}, Longitude:{" "}
+                                    {selectedHotel.details?.hotel?.longitude}
+                                </p>
+    
+                                {/* Offer Details */}
+                                <div className="mt-4">
+                                    <h4 className="font-semibold">
+                                        Room Type: {selectedHotel.details?.offers[0]?.room?.typeEstimated?.category}
+                                    </h4>
+                                    <p>
+                                        <strong>Beds:</strong> {selectedHotel.details?.offers[0]?.room?.typeEstimated?.beds} x{" "}
+                                        {selectedHotel.details?.offers[0]?.room?.typeEstimated?.bedType}
+                                    </p>
+                                    <p>{selectedHotel.details?.offers[0]?.room?.description?.text}</p>
+    
+                                    <h5 className="mt-2 text-lg font-semibold">
+                                        Price: {selectedHotel.details?.offers[0]?.price?.total}{" "}
+                                        {selectedHotel.details?.offers[0]?.price?.currency}
+                                    </h5>
+                                    <p>
+                                        <strong>Check-in:</strong> {selectedHotel.details?.offers[0]?.checkInDate}
+                                    </p>
+                                    <p>
+                                        <strong>Check-out:</strong> {selectedHotel.details?.offers[0]?.checkOutDate}
+                                    </p>
+                                </div>
+    
+                                {/* Cancellation Policy */}
+                                <div className="mt-4">
+                                    <h5 className="font-semibold">Cancellation Policy</h5>
+                                    <p>
+                                        Deadline: {selectedHotel.details?.offers[0]?.policies?.cancellations[0]?.deadline}
+                                    </p>
+                                    <p>
+                                        Fee: {selectedHotel.details?.offers[0]?.policies?.cancellations[0]?.amount}{" "}
+                                        {selectedHotel.details?.offers[0]?.price?.currency}
+                                    </p>
+                                </div>
                             </div>
-
-                            {/* Cancellation Policy */}
-                            <div className="mt-4">
-                                <h5 className="font-semibold">Cancellation Policy</h5>
-                                <p>Deadline: {selectedHotel.details?.offers[0]?.policies?.cancellations[0]?.deadline}</p>
-                                <p>Fee: {selectedHotel.details?.offers[0]?.policies?.cancellations[0]?.amount} {selectedHotel.details?.offers[0]?.price?.currency}</p>
+    
+                            {/* Reviews Section */}
+                            <div className="mt-6">
+                                <h3 className="text-lg font-semibold">Reviews</h3>
+                                <ul>
+                                    {selectedHotel.reviews?.data?.map((review: any, index: number) => (
+                                        <li key={index} className="mb-4">
+                                            <p>
+                                                <strong>{review.author?.name}</strong>
+                                            </p>
+                                            <p>{review.text}</p>
+                                        </li>
+                                    ))}
+                                </ul>
                             </div>
-                        </div>
-
-                        {/* Reviews Section */}
-                        <div className="mt-6">
-                            <h3 className="text-lg font-semibold">Reviews</h3>
-                            <ul>
-                                {selectedHotel.reviews?.data?.map((review: any, index: number) => (
-                                    <li key={index} className="mb-4">
-                                        <p><strong>{review.author?.name}</strong></p>
-                                        <p>{review.text}</p>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    </>
-                ) : (
-                    <p>Select a hotel to see details</p>
-                )}
+                        </>
+                    ) : (
+                        <p>Select a hotel to see details</p>
+                    )}
+                </div>
             </div>
         </div>
-    </div>
     );
+    
 };
 
 export default HotelView;
