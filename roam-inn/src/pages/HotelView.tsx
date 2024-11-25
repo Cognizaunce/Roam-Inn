@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { hotelInfo, hotelReviews } from '../services/hotelService.ts';
+import Header from '../components/header.tsx'; // Import your Header component
 
 const HotelView: React.FC = () => {
     const location = useLocation();
@@ -29,6 +30,8 @@ const HotelView: React.FC = () => {
     };
 
     return (
+        <div>
+            <Header /> {/* Include the Header component */}
         <div className="flex p-8 bg-gradient-to-r from-blue-600 to-blue-400">
             {/* Hotel List Section */}
             <div className="w-1/3 p-4 overflow-y-scroll max-h-screen no-scrollbar">
@@ -94,6 +97,7 @@ const HotelView: React.FC = () => {
                 )}
             </div>
         </div>
+    </div>
     );
 };
 

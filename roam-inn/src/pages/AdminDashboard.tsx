@@ -161,7 +161,6 @@ const AdminDashboard: React.FC = () => {
                             ))}
                         </tbody>
                     </table>
-
                     <div className="w-full h-64">
                         <h3 className="text-lg font-semibold mb-4">Bookings Overview</h3>
                         <ResponsiveContainer width="100%" height="100%">
