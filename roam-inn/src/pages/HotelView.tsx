@@ -31,6 +31,7 @@ const HotelView: React.FC = () => {
                     details: hotelDetails.data[0], // Using the first hotel offer
                     reviews: reviews,
                 });
+                console.log(selectedHotel)
             } else {
                 console.error('Hotel not found');
             }

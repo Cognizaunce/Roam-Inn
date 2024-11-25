@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 import requests
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
@@ -424,19 +424,18 @@ class BookingRequest(BaseModel):
 
 @app.post("/api/checkout-json")
 def create_booking(
-    booking_request: BookingRequest,  # Expecting a request body
     db: Session = Depends(get_db),
 ):
     """
     Creates a new booking in the database.
     """
     # Extract fields from the request model
-    user_id = booking_request.user_id
-    room_id = booking_request.room_id
-    check_in_date = booking_request.check_in_date
-    check_out_date = booking_request.check_out_date
-    total_price = booking_request.total_price
-    payment_status = booking_request.payment_status
+    user_id = 1
+    room_id = 2
+    check_in_date = datetime.now()
+    check_out_date = check_in_date + timedelta(days=2)
+    total_price = 200
+    payment_status = "pending"
 
     # Validate that the check-in date is before the check-out date
     if check_in_date >= check_out_date:

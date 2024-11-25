@@ -4,8 +4,7 @@ import Header from '../components/header.tsx';
 
 const CheckoutPage: React.FC = () => {
   const location = useLocation();
-  const { selectedHotel } = location.state || {};
-
+const { selectedHotel, check_in, check_out, rooms, adults } = location.state || {};
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [streetAddress, setStreetAddress] = useState('');
@@ -16,21 +15,36 @@ const CheckoutPage: React.FC = () => {
   const [expiryDate, setExpiryDate] = useState('');
   const [cvv, setCvv] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('credit_card'); // Default payment method is Credit Card
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Checkout Details:', {
-      name,
-      email,
-      streetAddress,
-      postalCode,
-      province,
-      country,
-      cardNumber,
-      expiryDate,
-      cvv,
-      selectedHotel,
-    });
+    setLoading(true);
+    setErrorMessage('');
+    setSuccessMessage('');
+    try {
+      const response = await fetch('/api/checkout-json', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({}),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setSuccessMessage('Booking successfully created.');
+      console.log('Booking response:', data);
+    } catch (error) {
+      setErrorMessage(`Booking failed: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
