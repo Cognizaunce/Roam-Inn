@@ -29,7 +29,7 @@
          python -m venv venv
          ```
       
-   2. **To activate the Python environment run the following command(s)**
+   2. **To activate the Python environment run the following command**
          **On Windows**
          ```bash
          .\venv\Scripts\activate
