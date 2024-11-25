@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'; // Import Recharts components
-import Header from '../components/header.tsx'; // Import your Header component
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import Header from '../components/header.tsx';
 import '../styling/tailwind.css';
 
 const AdminDashboard: React.FC = () => {
@@ -15,8 +15,8 @@ const AdminDashboard: React.FC = () => {
         if (!authToken) {
             navigate('/admin-login'); // Redirect to login if not logged in
         } else {
-            // Fetch the list of users
-            fetch('/api/users', {
+            // Fetch the list of users with bookings
+            fetch('/api/bookings-per-user', {
                 method: 'GET',
                 headers: {
                     Authorization: `Bearer ${authToken}`,
@@ -24,16 +24,15 @@ const AdminDashboard: React.FC = () => {
             })
                 .then((response) => response.json())
                 .then((data) => {
-                    // Assign random booking numbers to users
-                    const usersWithBookings = data.map((user: any) => ({
-                        ...user,
-                        bookings: Math.floor(Math.random() * 100), // Random bookings count
-                    }));
-                    setUsers(usersWithBookings);
+                    if (data.status === 'success') {
+                        setUsers(data.data); // Assuming the API returns { status: "success", data: [...] }
+                    } else {
+                        setErrorMessage('Failed to load bookings data. Please try again.');
+                    }
                 })
                 .catch((error) => {
-                    setErrorMessage('Failed to load users. Please try again.');
-                    console.error('Error fetching users:', error);
+                    setErrorMessage('Failed to load bookings data. Please try again.');
+                    console.error('Error fetching bookings per user:', error);
                 });
         }
     }, [navigate]);
@@ -103,12 +102,10 @@ const AdminDashboard: React.FC = () => {
 
     return (
         <div>
-            <Header /> {/* Include the Header component */}
+            <Header />
 
-            {/* Main content container */}
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-600 to-blue-400">
                 <div className="bg-white p-8 rounded-lg shadow-lg w-full sm:w-96">
-                    {/* Error message */}
                     {errorMessage && (
                         <p className="bg-red-100 text-red-800 p-3 rounded mb-4 text-center">
                             {errorMessage}
@@ -117,12 +114,12 @@ const AdminDashboard: React.FC = () => {
 
                     <h2 className="text-2xl font-bold text-center mb-6 w-full">Admin Dashboard</h2>
 
-                    {/* User Table */}
                     <table className="min-w-full table-auto bg-white mb-8">
                         <thead>
                             <tr>
                                 <th className="px-4 py-2 text-left">Name</th>
                                 <th className="px-4 py-2 text-left">Email</th>
+                                <th className="px-4 py-2 text-left">Bookings</th>
                                 <th className="px-4 py-2 text-left">User Type</th>
                                 <th className="px-4 py-2 text-left">Actions</th>
                             </tr>
@@ -134,6 +131,7 @@ const AdminDashboard: React.FC = () => {
                                         {user.first_name} {user.last_name}
                                     </td>
                                     <td className="px-4 py-2">{user.email}</td>
+                                    <td className="px-4 py-2">{user.total_bookings}</td>
                                     <td className="px-4 py-2">{user.user_type}</td>
                                     <td className="px-4 py-2 flex space-x-2 justify-start">
                                         {user.user_type !== 'admin' && (
@@ -164,7 +162,6 @@ const AdminDashboard: React.FC = () => {
                         </tbody>
                     </table>
 
-                    {/* Bar Chart */}
                     <div className="w-full h-64">
                         <h3 className="text-lg font-semibold mb-4">Bookings Overview</h3>
                         <ResponsiveContainer width="100%" height="100%">
@@ -172,7 +169,7 @@ const AdminDashboard: React.FC = () => {
                                 <XAxis dataKey="first_name" />
                                 <YAxis />
                                 <Tooltip />
-                                <Bar dataKey="bookings" fill="#8884d8" />
+                                <Bar dataKey="total_bookings" fill="#8884d8" />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
