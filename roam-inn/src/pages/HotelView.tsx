@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { hotelInfo, hotelReviews } from '../services/hotelService.ts';
 import Header from '../components/header.tsx'; // Import your Header component
 
@@ -29,6 +29,12 @@ const HotelView: React.FC = () => {
         }
     };
 
+    // Handle the usage of the checkout button.
+    const navigate = useNavigate();
+    const handleCheckout = () => {
+        navigate('/checkout-page');
+    };
+
     return (
         <div>
             <Header /> {/* Include the Header component */}
@@ -50,6 +56,7 @@ const HotelView: React.FC = () => {
                 </div>
                 <button
                             type="submit"
+                            onClick={handleCheckout}
                             className="w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 transition duration-200"
                         >
                     Checkout
