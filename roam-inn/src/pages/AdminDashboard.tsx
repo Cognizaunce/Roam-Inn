@@ -145,7 +145,6 @@ const AdminDashboard: React.FC = () => {
                                 <tr>
                                     <th className="px-4 py-2 text-left">Name</th>
                                     <th className="px-4 py-2 text-left">Email</th>
-                                    <th className="px-4 py-2 text-left">Bookings</th>
                                     <th className="px-4 py-2 text-left">User Type</th>
                                     <th className="px-4 py-2 text-left">Actions</th>
                                 </tr>
@@ -157,7 +156,6 @@ const AdminDashboard: React.FC = () => {
                                             {user.first_name} {user.last_name}
                                         </td>
                                         <td className="px-4 py-2">{user.email}</td>
-                                        <td className="px-4 py-2">{user.total_bookings}</td>
                                         <td className="px-4 py-2">{user.user_type}</td>
                                         <td className="px-4 py-2 flex space-x-2 justify-start">
                                             {user.user_type === 'admin' ? (
