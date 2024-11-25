@@ -15,7 +15,43 @@
    git clone <repository_url>
    ```
 
-2. **Navigate to the Project Directory**  
+## Backend Setup
+
+1. **Navigate to the backend directory**
+   ```bash
+      cd roam-inn/backend
+      ```
+
+2. ## Setup Python environment | make sure you have any python 3 version installed
+
+   1. **To set up the Python environment, run the following command**   
+      ```bash
+         python -m venv venv
+         ```
+      
+   2. **To activate the Python environment run the following command(s)**
+         **On Windows**
+         ```bash
+         .\venv\Scripts\activate
+         ```
+         **On macOS/Linux run the following command**
+         ```bash
+            source venv/bin/activate
+         ```
+      
+   3. **Install Python Dependencies | Run the following command**
+      ```bash
+         pip install -r requirements.txt
+      ```
+      
+   4. **Run the backend | Run the following command**
+      ```bash
+         uvicorn main:app --reload
+      ```
+
+## Frontend setup
+
+1. **Navigate to the Project Directory**  
    After cloning, change into the project directory:
    
    ```bash
@@ -33,7 +69,13 @@
    These commands will install `create-react-app` and `react`, which are required to run the application locally.
 
 4. **Run the Application**  
-   Once the dependencies are installed, the application is ready to run locally.
+   Once the dependencies are installed, the application is ready to run locally. Run the following command:
+
+   ```bash
+   npm start
+   ```
+
+
 
 ## Branch Management
 
