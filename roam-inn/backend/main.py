@@ -341,3 +341,65 @@ def get_bookings_per_user(db: Session = Depends(get_db)):
     ]
 
     return {"status": "success", "data": result}
+
+# Endpoint: Get create a checkout
+# API endpoint
+@app.post("/api/checkout")
+def create_booking(
+    user_id: int,
+    room_id: int,
+    check_in_date: datetime,
+    check_out_date: datetime,
+    total_price: float,
+   # payment_status: str,
+    db: Session = Depends(get_db),
+):
+    """
+    Creates a new booking in the database with inline validation.
+    """
+    # Validate that the check-in date is before the check-out date
+    if check_in_date >= check_out_date:
+        raise HTTPException(status_code=400, detail="Check-in date must be before the check-out date.")
+
+    # Validate total_price is positive
+    if total_price <= 0:
+        raise HTTPException(status_code=400, detail="Total price must be greater than zero.")
+
+    try:
+        # Create a new booking instance
+        new_booking = Booking(
+            user_id=user_id,
+            room_id=room_id,
+            check_in_date=check_in_date,
+            check_out_date=check_out_date,
+            total_price=total_price,
+            payment_status="successful",
+            created_on=datetime.utcnow(),
+            updated_on=datetime.utcnow(),
+        )
+
+        # Add the booking to the database
+        db.add(new_booking)
+        db.commit()
+        db.refresh(new_booking)
+
+        return {
+            "status": "success",
+            "message": "Booking created successfully",
+            "booking": {
+                "booking_id": new_booking.booking_id,
+                "user_id": new_booking.user_id,
+                "room_id": new_booking.room_id,
+                "check_in_date": new_booking.check_in_date,
+                "check_out_date": new_booking.check_out_date,
+                "total_price": float(new_booking.total_price),
+                "payment_status": new_booking.payment_status.value,
+                "created_on": new_booking.created_on,
+                "updated_on": new_booking.updated_on,
+            },
+        }
+
+    except Exception as e:
+        # Handle errors (e.g., ForeignKey violations, validation errors)
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Error creating booking: {str(e)}")
