@@ -6,7 +6,7 @@
 
 - **Node.js**: Make sure you have Node.js installed. You can download it from [nodejs.org](https://nodejs.org).
 
-- **MySQL**: download the MySQL installer from its official page here: [MySQL Community Downloads](https://dev.mysql.com/downloads/)
+- **MySQL**: Download the MySQL installer from its official page here: [MySQL Community Downloads](https://dev.mysql.com/downloads/)
    or directly access the [MySQL Installer for Windows](https://dev.mysql.com/downloads/installer/).
 
 - **Python**: Get the latest Python version for your operating system from the [official Python download page](https://www.python.org/downloads/).
@@ -14,10 +14,10 @@
 ## Setup
 
 1. **Clone the Repository**  
-   To get started, clone the repository from your version control platform:
+   To get started, clone the repository using its remote url:
    
    ```bash
-   git clone <repository_url>
+   git clone https://github.com/Cognizaunce/Roam-Inn.git
    ```
 
 ## Backend Setup
@@ -27,11 +27,11 @@
       cd roam-inn/backend
       ```
 
-2. **Setup database | Make sure you have database connection setup in MySQL and database name is "roaminn"**
+2. **Set up Database | Make sure you have database connection setup in MySQL and database name is "roaminn"**
 
    **1. Run the sql commands in the "Creating SQL.sql"  ---> in project directory**
 
-   **2. Run the following commands in your terminal once databse schema is initialized | Make sure to replace values according to your connection**
+   **2. Run the following commands in your terminal once database schema is initialized | Make sure to replace values according to your connection**
     ```bash
       export MYSQL_USER=your_username
       export MYSQL_PASSWORD=your_password
@@ -40,29 +40,29 @@
       export MYSQL_DB=your_database_name
       ```
 
-4. **Setup Python environment | make sure you have any python 3 version installed**
+3. **Set up Python environment | make sure you have any Python 3 version installed**
 
-   1. **To set up the Python environment, run the following command**   
+   1. **Create your Python virtual environment**   
       ```bash
          python -m venv venv
          ```
       
-   2. **To activate the Python environment run the following command**
+   2. **Activate the virtual environment**
          **On Windows**
          ```bash
          .\venv\Scripts\activate
          ```
-         **On macOS/Linux run the following command**
+         **On macOS/Linux**
          ```bash
             source venv/bin/activate
          ```
       
-   3. **Install Python Dependencies | Run the following command**
+   3. **Install Python Dependencies**
       ```bash
          pip install -r requirements.txt
       ```
       
-   4. **Run the backend | Run the following command**
+   4. **Run the backend**
       ```bash
          uvicorn main:app --reload
       ```
@@ -76,7 +76,7 @@
    cd roam-inn
    ```
 
-3. **Install Dependencies**  
+2. **Install Dependencies**  
    Install the required Node.js modules by running the following commands:
    
    ```bash
@@ -86,7 +86,7 @@
    
    These commands will install `create-react-app` and `react`, which are required to run the application locally.
 
-4. **Run the Application**  
+3. **Run the Application**  
    Once the dependencies are installed, the application is ready to run locally. Run the following command:
 
    ```bash
@@ -131,11 +131,17 @@
 ## Notes
 
 - Ensure that your code is properly tested before merging to the `dev` branch.
-- Only authorized users may push to prod
+- Only authorized users may push to `prod`
 
 
 ## To Run
 
-in backend, uvicorn main:app --reload
+- In the backend directory (`roam-inn/backend`):
+  ```bash
+  uvicorn main:app --reload
+  ```
 
-in roaminn. npm start
+- In teh frontend directory (`roam-inn`):
+  ```bash
+  npm start
+  ```
